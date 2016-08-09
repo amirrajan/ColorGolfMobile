@@ -45,14 +45,14 @@ ObjectiveC or Java. Even if you're gun shy about using Ruby, you'll
 still get a great overview of how to read ObjectiveC and Java code
 contextualized through Ruby lenses. So let's get started.
 
-# ObjectiveC to Ruby #
+## ObjectiveC to Ruby ##
 
 Here is how a `Person` class would be created in ObjectiveC. There are
 two properties `firstName` and `lastName`, and instance function
 called `sayHello` that returns a string. Instance methods in
 ObjectiveC are denoted by the `-` sign preceeding the function name:
 
-## Class Construction ##
+### Class Construction ###
 
 ```objectivec
 //Person.h
@@ -127,7 +127,7 @@ NSLog(person.sayHello)
 Also, in Ruby, you _can_ use `Person.alloc.init`, but `Person.new` is
 also available to you and does the same thing.
 
-## Method Anatomy ##
+### Method Anatomy ###
 
 Generally speaking, all APIs in iOS use named parameters (and by
 extension, most iOS developers follow suit with their own
@@ -201,7 +201,7 @@ person.setDobWithMonth(1, 1, 2013)
 But it's important to know how to call methods with named parameters,
 because all iOS APIs are built that way.
 
-## Blocks ##
+### Blocks ###
 
 There is a reason why
 [Fucking Block Syntax](http://fuckingblocksyntax.com/) exists. It's
@@ -278,7 +278,7 @@ UIView.animateWithDuration(2.0, animations: lambda {
 
 Congratulations! You can now read and translate ObjectiveC to Ruby.
 
-## Categories vs Mixins ##
+### Categories vs Mixins ###
 
 To extend a sealed/third party classes, ObjectiveC has the concept of
 a `Category`. Let's say we want to take the animation logic from the
@@ -352,7 +352,7 @@ label.setAlpha 0
 label.animate 1 { label.setAlpha 1 }
 ```
 
-## Class Macros ##
+### Class Macros ###
 
 Ruby class macros are great, and significantly increase
 readability. Here is a class from my game A Dark Room, which describes
@@ -446,8 +446,7 @@ accomplishes the same thing as the Ruby code with class macros.
 @end
 ```
 
-
-Java to Ruby
+## Java to Ruby ##
 
 https://developer.android.com/training/articles/perf-tips.html#GettersSetters
 
