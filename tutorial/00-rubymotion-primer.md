@@ -48,7 +48,7 @@ contextualized through Ruby lenses. So let's get started.
 ## ObjectiveC to Ruby ##
 
 Here is how a `Person` class would be created in ObjectiveC. There are
-two properties `firstName` and `lastName`, and instance function
+two properties `firstName` and `lastName`, and an instance method
 called `sayHello` that returns a string. Instance methods in
 ObjectiveC are denoted by the `-` sign preceeding the function name:
 
@@ -76,7 +76,7 @@ ObjectiveC are denoted by the `-` sign preceeding the function name:
 Here is how you would instanciate an instance of `Person` and call the
 `sayHello` function.
 
-```
+```objectivec
 Person *person = [[Person alloc] init];
 person.firstName = @"Amir";
 person.lastName = @"Rajan";
@@ -117,7 +117,7 @@ interalize the _mechancial_ aspect of converting ObjectiveC to
 Ruby. Basically, you remove the `[]` and replace it with `.`. We'll
 have more examples later.
 
-```
+```ruby
 person = Person.alloc.init
 person.firstName = "Amir"
 person.lastName = "Rajan"
@@ -161,7 +161,7 @@ internal binding.
 
 Here is how you would call the method.
 
-```
+```objectivec
 [person setDobWithMonth:1 withDay:1 withYear:2013];
 ```
 
@@ -225,7 +225,7 @@ block is `void (^)(RKMappingResult) (╯°□°)╯︵ ┻━┻`.
 
 Here is how you would invoke the `post:toUrl:success` method:
 
-```
+```objectivec
 [client post: @{ @"firstName": @"Amir", @"lastName": @"Rajan" }
        toUrl: @"http://localhost/people"
      success:^(RKMappingResult *result) {
@@ -347,7 +347,7 @@ end
 Look at that, RubyMotion "Just Works (TM)". Here is how you would
 invoke that function.
 
-```
+```ruby
 label.setAlpha 0
 label.animate 1 { label.setAlpha 1 }
 ```
@@ -374,7 +374,7 @@ end
 
 Here is the definition of the class macro.
 
-```
+```ruby
 class EncounterEvent
   def self.title title
     define_method("title") { title }
@@ -448,7 +448,27 @@ accomplishes the same thing as the Ruby code with class macros.
 
 ## Java to Ruby ##
 
-https://developer.android.com/training/articles/perf-tips.html#GettersSetters
+Here is how a `Person` class would be created in Java. There are
+two public members `firstName` and `lastName`, and an instance function
+called `sayHello` that returns a string.
+
+### Class Construction ###
+
+```java
+public class Person {
+  public string firstName;
+  public string lastName;
+
+  public string sayHello() {
+    return "Hello, " + firstName + " " + lastName;
+  }
+}
+
+Person person = new Person();
+person.firstName = "Amir";
+person.lastName = "Rajan";
+System.out.println(person.sayHello())
+```
 
 ```ruby
 class Person
@@ -462,12 +482,12 @@ end
 person = Person.alloc.init
 person.firstName = "Amir"
 person.lastName = "Rajan"
-NSLog(person.sayHello)
+puts person.sayHello
 ```
 
-functions
+### Import Statements ###
 
-http://stackoverflow.com/questions/1988016/named-parameter-idiom-in-java
+### Method Anatomy ###
 
 ```java
 Color color = Android.Graphics.Color.argb(255, 0, 96.0, 255.0)
@@ -475,4 +495,72 @@ Color color = Android.Graphics.Color.argb(255, 0, 96.0, 255.0)
 
 ```ruby
 color = Android::Graphics::Color.argb(255, 0, 96.0, 255.0)
+```
+
+### Dictionaries ###
+
+```java
+Map<String,String> test = new HashMap<String, String>();
+test.put("test","test");
+test.put("test1","test2");
+```
+
+### Anonymous Classes ###
+
+```java
+Map<String,String> test = new HashMap<String, String>(){{
+  put("test","test"); put("test","test");
+}};
+```
+
+### Blocks ###
+
+```java
+public interface OnTaskCompleted{
+    void onTaskCompleted(JSONObject result);
+}
+
+public class Callback implements OnTaskCompleted{
+    @Override
+    public void onTaskCompleted(JSONObject result) {
+        // do something with result here!
+    }
+}
+
+Callback callback = new Callback() {
+    public boolean handleMessage(Message msg) {
+        <code to be executed during callback>
+    }
+};
+```
+
+### Sorted ###
+
+```java
+Arrays.sort(scoreboard, new Comparator<String[]>() {
+     @Override
+     public int compare(String[] entry1, String[] entry2) {
+        Integer time1 = Integer.valueOf(entry1[1]);
+        Integer time2 = Integer.valueOf(entry2[1]);
+        return time1.compareTo(time2);
+        }
+     });
+Also you can make simple value object class for easier manipulations. Like...
+
+class Player
+{
+  public String name;
+  public int score;
+}
+And after that you can make
+
+ Player[] scoreboard = ...
+ Arrays.sort(scoreboard, new Comparator<Player>() {
+          @Override
+          public int compare(Player player1, Player player2) {
+              if(player1.score > player2.score) return 1;
+              else if(player1.score < player2.score) return -1;
+              else return 0;
+             }
+ });
 ```
