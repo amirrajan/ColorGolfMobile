@@ -3,11 +3,29 @@
 - You need a Mac.
 - You need to be on the El Cap OS.
 - You need to XCode (you can get it from the AppStore).
+- You need to then open XCode and accept the license.
+- You need to Java preferablly [Java JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html).
+- You need to realize that the steps above are required whether you
+  use RubyMotion or not. If you want to do development on iOS and
+  Android, this is the tax you pay.
 - You need Ruby installed, preferablly version `2.3.1p112` or
-  later. I'd recommend using [`rbenv`](https://github.com/rbenv/rbenv) for managing ruby versions.
+  later. I'd recommend using [`rbenv`](https://github.com/rbenv/rbenv) for managing Ruby versions.
 - Go to the RubyMotion website and [download the
   free version](http://www.rubymotion.com/download/starter/). You
   will need to provide an email address to get a license key.
+- Add the following lines to `~/.profile` (or configuration file of your choice):
+```bash
+export RUBYMOTION_ANDROID_SDK="/Users/YOURUSERNAME/.rubymotion-android/sdk"
+export RUBYMOTION_ANDROID_NDK="/Users/YOURUSERNAME/.rubymotion-android/ndk"
+```
+- In a terminal, run `motion android-setup` and follow the prompts
+  (iOS is supported by default via XCode).
+- After following the prompts, the Android SDK Manager will pop up. At
+  the bottom right is a button to install selected packages (if you
+  want to install any additional SDK's). Click that button, accept the
+  licenses, and install (again, if you weren't using RubyMotion you'd
+  still have to do this stuff, and it wouldn't be automated like it is
+  with `motion android-setup`).
 
 # Ruby/ObjectiveC/Java Primer #
 
@@ -65,6 +83,8 @@ paired brackets `[]`. So instead of `person.sayHello()` you have
 method, and an `init` instance method. The `alloc` class method
 creates a memory space for the instance of the class, and the `init`
 method initializes it (essentially a constructor).
+
+Properties are accessed using the `.` operator (as opposed to the `[]`).
 
 String literals must be preceded by an `@` sign. This is required for
 backwards compatability with C (all C code is valid ObjectiveC
@@ -188,6 +208,15 @@ providing a callback on success.
 success:(void (^)(RKMappingResult *mappingResult))success { }
 ```
 
+Building upon what we learned in the previous section. The name of
+this method is `post:toUrl:success` (a more idiomatic name would
+probably be `postWithObject:withUrl:success`... but I digress).
+
+The block is denoted by the `^` token. The full type signature for the
+block is `void (^)(RKMappingResult) (╯°□°)╯︵ ┻━┻`.
+
+Here is how you would invoke the `post:toUrl:success` method:
+
 ```
 [client post: @{ @"firstName": @"Amir", @"lastName": @"Rajan" }
        toUrl: @"http://localhost/people"
@@ -195,6 +224,16 @@ success:(void (^)(RKMappingResult *mappingResult))success { }
        //callback code here
      }];
 ```
+
+Again, method invocation is denoted by using `[]`. For backward
+compatability with C, dictionary literals must be prefixed with the
+`@`, and of course, strings must also be prefixed with the `@` sign. I
+call it the bloody stump character, because after you've typed a good
+100 times, your fingers will end up being bloody stumps.
+
+The callback `success` is denoted with the `^`, plus the typed
+parameters, plus the callback method body. Here's how you would write
+and invoke the same thing in Ruby:
 
 ```ruby
 def post(objectToPost, toUrl: toUrl, success: success)
@@ -208,7 +247,8 @@ client post({ firstName: "Amir", lastName: "Rajan" },
   })
 ```
 
-Quiz
+With what you've read so far, you should be able to translate the
+ObjectiveC code to Ruby. This was taken from an actual StackOverflow answer:
 
 ```objectivec
 _label.layer.backgroundColor = [UIColor whiteColor].CGColor;
@@ -218,6 +258,8 @@ _label.layer.backgroundColor = [UIColor whiteColor].CGColor;
 } completion:NULL];
 ```
 
+Don't look, below until you think you've got the translation figured out.
+
 ```ruby
 @label.layer.backgroundColor = UIColor.whiteColor.CGColor
 
@@ -226,14 +268,31 @@ UIView.animateWithDuration(2.0, animations: lambda {
 }, completion: nil)
 ```
 
-Mixins vs Categories
+Congratulations! You can now read and translate ObjectiveC to Ruby.
+
+## Categories vs Mixins ##
+
+To extend a sealed/third party classes, ObjectiveC has the concept of
+a `Category`. Let's say we want to take the animation logic from the
+StackOverflow question above, and make it a part of `UIView` (a class
+within iOS's `UIKit` library). Here is how you would do it in
+ObjectiveC.
+
+First we define the preprocessor directive (method with named
+parameters, blocks, and bloody stump characters):
 
 ```objectivec
 @interface UIView (UIViewExtensions)
 - (void)animate:(double)duration block:(void (^)(void))block;
 - (void)animate:(void (^)(void))block;
 @end
+```
 
+ObjectiveC has method overloading, so we provide two implementations
+of the function, one that takes in a duration and another that has a
+default value.
+
+```objectivec
 @implementation UIView (UIViewExtensions)
 - (void)animate:(void (^)(void))block {
   [self animate:0.5 block:block];
@@ -246,10 +305,17 @@ Mixins vs Categories
   [UIView commitAnimations];
 }
 @end
+```
 
+This is the usage:
+
+```objectivec
 [label setAlpha:0];
 [label animate:1 block:^{ [label setAlpha:1]; }];
 ```
+
+In Ruby, we simply open the class/use a mixin. For berevity, I've just
+opened the class \#yolo.
 
 ```ruby
 class UIView
@@ -268,12 +334,21 @@ end
     UIView.commitAnimations
   end
 end
+```
 
+Look at that, RubyMotion "Just Works (TM)". Here is how you would
+invoke that function.
+
+```
 label.setAlpha 0
 label.animate 1 { label.setAlpha 1 }
 ```
 
-class macros
+## Class Macros ##
+
+Ruby class macros are great, and significantly increase
+readability. Here is a class from my game A Dark Room, which describes
+an encounter with an enemy.
 
 ```ruby
 class SnarlingBeastEvent < EncounterEvent
@@ -287,7 +362,11 @@ class SnarlingBeastEvent < EncounterEvent
     }
   end
 end
+```
 
+Here is the definition of the class macro.
+
+```
 class EncounterEvent
   def self.title title
     define_method("title") { title }
@@ -302,6 +381,17 @@ class EncounterEvent
   end
 end
 ```
+
+Given that ObjectiveC:
+
+- Doesn't have class macros.
+- Makes you use the bloody stump character.
+- Doesn't have the concept of a symbol.
+- Forces you to explicitly box and unbox value types from
+  dictionaries.
+
+You get a death by 1000 paper cuts. Here is the ObjectiveC code that
+accomplishes the same thing as the Ruby code with class macros.
 
 ```objectivec
 @interface SnarlingBeastEvent : EncounterEvent
