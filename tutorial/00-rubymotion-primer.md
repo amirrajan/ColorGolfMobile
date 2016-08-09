@@ -1,6 +1,32 @@
-ObjectiveC to Ruby
+# Installing RubyMotion #
 
-Class
+- You need a Mac.
+- You need to be on the El Cap OS.
+- You need to XCode (you can get it from the AppStore).
+- You need Ruby installed, preferablly version `2.3.1p112` or
+  later. I'd recommend using [`rbenv`](https://github.com/rbenv/rbenv) for managing ruby versions.
+- Go to the RubyMotion website and [download the
+  free version](http://www.rubymotion.com/download/starter/). You
+  will need to provide an email address to get a license key.
+
+# Ruby/ObjectiveC/Java Primer #
+
+Answers on StackOverflow for iOS and Android issues are in their
+respective languages (ObjectiveC, Java). There's no denying that. This
+section goes into how you can translate ObjectiveC and Java to
+Ruby. It's surprisingly simple, even if you've never written a line of
+ObjectiveC or Java. Even if you're gun shy about using Ruby, you'll
+still get a great overview of how to read ObjectiveC and Java code
+contextualized through Ruby lenses. So let's get started.
+
+# ObjectiveC to Ruby #
+
+Here is how a `Person` class would be created in ObjectiveC. There are
+two properties `firstName` and `lastName`, and instance function
+called `sayHello` that returns a string. Instance methods in
+ObjectiveC are denoted by the `-` sign preceeding the function name:
+
+## Class Construction ##
 
 ```objectivec
 //Person.h
@@ -19,12 +45,34 @@ Class
                                     _lastName];
 }
 @end
+```
 
+Here is how you would instanciate an instance of `Person` and call the
+`sayHello` function.
+
+```
 Person *person = [[Person alloc] init];
 person.firstName = @"Amir";
 person.lastName = @"Rajan";
 NSLog([person sayHello]);
 ```
+
+Let's break this down:
+
+Method invocation in ObjectiveC is done through
+paired brackets `[]`. So instead of `person.sayHello()` you have
+`[person sayHello]`. All ObjectiveC classes have an `alloc` class
+method, and an `init` instance method. The `alloc` class method
+creates a memory space for the instance of the class, and the `init`
+method initializes it (essentially a constructor).
+
+String literals must be preceded by an `@` sign. This is required for
+backwards compatability with C (all C code is valid ObjectiveC
+code... ObjectiveC is a superset of C).
+
+`NSLog` is essentially `puts`. It's a global C method so is available anywhere.
+
+Here is the same `Person` class and usage, but in Ruby.
 
 ```ruby
 class Person
@@ -34,14 +82,28 @@ class Person
     "Hello, #{@firstName} #{@lastName}"
   end
 end
+```
 
+The usage should be pretty straight forward. It's important to
+interalize the _mechancial_ aspect of converting ObjectiveC to
+Ruby. Basically, you remove the `[]` and replace it with `.`. We'll
+have more examples later.
+
+```
 person = Person.alloc.init
 person.firstName = "Amir"
 person.lastName = "Rajan"
 NSLog(person.sayHello)
 ```
 
-Named functions
+Also, in Ruby, you _can_ use `Person.alloc.init`, but `Person.new` is
+also available to you and does the same thing.
+
+## Method Anatomy ##
+
+Generally speaking, all APIs in iOS use named parameters (and by
+extension, most iOS developers follow suit with their own
+classes). Here is an example how you would declare a method in ObjectiveC.
 
 ```objectivec
 - (void)setDobWithMonth:(NSInteger)month
@@ -49,9 +111,38 @@ Named functions
                withYear:(NSInteger)year {
 
 }
+```
 
+This was really weird the first time I saw it too. So let's break down
+the code above. First, the `-` sign preceeding the method name denotes
+that this is an instance method (a `+` sign denotes that it's a class
+method... more on that later). The next token `(void)` denotes the
+return type.
+
+Now for the fun part. The method name _includes_ the name of the first
+parameter (usually the method name is seperated from the parameter
+name using the word `With` as a delimeter). The `setDobWithMonth`,
+`withDay`, `withYear` are the _public_ names or the parameters. This
+is what users of the method will see when autocompletion pops up.
+
+The tokens `month`, `day`, `year` are what the public names are bound
+to _within_ the method body. This is crazy/weird I know. Take a moment
+to internalize this. In short, a method's name includes its named
+parameters, and each parameter has a outward facing name and an
+internal binding.
+
+Here is how you would call the method.
+
+```
 [person setDobWithMonth:1 withDay:1 withYear:2013];
 ```
+
+If you were to tell a teammate to call this method you would say.
+
+>Call the `setDobWithMonth:withDay:withYear` method.
+
+Now that you understand the anatomy of a ObjectiveC function. Here is
+how you would do exact same thing in Ruby.
 
 ```ruby
 def setDobWithMonth(month,
@@ -59,18 +150,45 @@ def setDobWithMonth(month,
   withYear: year)
 
 end
+```
 
+And here is the invocation:
+
+```
 person.setDobWithMonth(1, withDay: 1, withYear: 2013)
 ```
 
-Blocks
+Now, of course, you can nix the public names of the methods if you
+wish, and simply have:
+
+
+```ruby
+def setDobWithMonth(month, day, year)
+
+end
+
+person.setDobWithMonth(1, 1, 2013)
+```
+
+But it's important to know how to call methods with named parameters,
+because all iOS APIs are built that way.
+
+## Blocks ##
+
+There is a reason why
+[Fucking Block Syntax](http://fuckingblocksyntax.com/) exists. It's
+because it's terrifying. Let's break down the next piece of code,
+which does an `POST (HTTP)`, passing a dictionary, to a url, and
+providing a callback on success.
 
 ```objectivec
 - (void)
    post:(NSDictionary *)objectToPost
   toUrl:(NSString *)toUrl
 success:(void (^)(RKMappingResult *mappingResult))success { }
+```
 
+```
 [client post: @{ @"firstName": @"Amir", @"lastName": @"Rajan" }
        toUrl: @"http://localhost/people"
      success:^(RKMappingResult *result) {
