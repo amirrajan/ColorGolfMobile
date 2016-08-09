@@ -1,13 +1,19 @@
-# Installing RubyMotion #
+# Getting Your Mac Set Up for Mobile Development #
+
+Realize that the steps above are required whether you use RubyMotion
+or not. If you want to do development on iOS and Android, this is the
+tax you pay.
 
 - You need a Mac.
 - You need to be on the El Cap OS.
 - You need to XCode (you can get it from the AppStore).
 - You need to then open XCode and accept the license.
 - You need to Java preferablly [Java JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html).
-- You need to realize that the steps above are required whether you
-  use RubyMotion or not. If you want to do development on iOS and
-  Android, this is the tax you pay.
+- Install [Virtual Box](https://www.virtualbox.org/wiki/Downloads).
+- Install [Genymotion](https://www.genymotion.com/thank-you-freemium/) for fast Android Emulation.
+
+# Installing RubyMotion #
+
 - You need Ruby installed, preferablly version `2.3.1p112` or
   later. I'd recommend using [`rbenv`](https://github.com/rbenv/rbenv) for managing Ruby versions.
 - Go to the RubyMotion website and [download the
@@ -22,10 +28,12 @@ export RUBYMOTION_ANDROID_NDK="/Users/YOURUSERNAME/.rubymotion-android/ndk"
   (iOS is supported by default via XCode).
 - After following the prompts, the Android SDK Manager will pop up. At
   the bottom right is a button to install selected packages (if you
-  want to install any additional SDK's). Click that button, accept the
-  licenses, and install (again, if you weren't using RubyMotion you'd
-  still have to do this stuff, and it wouldn't be automated like it is
-  with `motion android-setup`).
+  want to install any additional SDK's). Click the install button,
+  accept the licenses, and install (if you weren't using RubyMotion
+  you'd still have to do this stuff, and it wouldn't be automated like
+  it is with `motion android-setup`).
+- Open Genymotion, go to Settings->ADB and point the sdk path to
+  `/Users/YOURUSERNAME/.rubymotion-android/sdk`.
 
 # Ruby/ObjectiveC/Java Primer #
 
