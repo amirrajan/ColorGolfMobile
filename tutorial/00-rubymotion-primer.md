@@ -24,15 +24,12 @@ tax you pay.
 export RUBYMOTION_ANDROID_SDK="/Users/YOURUSERNAME/.rubymotion-android/sdk"
 export RUBYMOTION_ANDROID_NDK="/Users/YOURUSERNAME/.rubymotion-android/ndk"
 ```
-- In a terminal, run `motion android-setup` and follow the prompts
+- In a terminal, run `motion android-setup --api_version=20` and follow the prompts
   (iOS is supported by default via XCode).
-- After following the prompts, the Android SDK Manager will pop up. At
-  the bottom right is a button to install selected packages (if you
-  want to install any additional SDK's). Click the install button,
-  accept the licenses, and install (if you weren't using RubyMotion
-  you'd still have to do this stuff, and it wouldn't be automated like
-  it is with `motion android-setup`).
-- Open Genymotion, go to Settings->ADB and point the sdk path to
+- When the Android SDK Manager application pops up. Click the `Install
+  X Packages ...` button and accept all the licenses. After all the
+  downloads complete, close the window.
+- Open Genymotion, go to Settings->ADB and point the SDK path to
   `/Users/YOURUSERNAME/.rubymotion-android/sdk`.
 
 # Ruby/ObjectiveC/Java Primer #
@@ -276,8 +273,6 @@ UIView.animateWithDuration(2.0, animations: lambda {
 }, completion: nil)
 ```
 
-Congratulations! You can now read and translate ObjectiveC to Ruby.
-
 ### Categories vs Mixins ###
 
 To extend a sealed/third party classes, ObjectiveC has the concept of
@@ -344,15 +339,14 @@ end
 end
 ```
 
-Look at that, RubyMotion "Just Works (TM)". Here is how you would
-invoke that function.
+Here is how you would invoke that function.
 
 ```ruby
 label.setAlpha 0
 label.animate 1 { label.setAlpha 1 }
 ```
 
-### Class Macros ###
+### Benefit of Class Macros ###
 
 Ruby class macros are great, and significantly increase
 readability. Here is a class from my game A Dark Room, which describes
@@ -401,12 +395,21 @@ Given that ObjectiveC:
 You get a death by 1000 paper cuts. Here is the ObjectiveC code that
 accomplishes the same thing as the Ruby code with class macros.
 
+Define the preprocessor directive. One class method `initNew`, and one
+instance method `loot`:
+
 ```objectivec
 @interface SnarlingBeastEvent : EncounterEvent
 + (id)initNew;
 - (NSDictionary *)loot;
 @end
+```
 
+Call parent constructor with specific attributes. Override `loot`
+method. The dictionary literal contstruction, and boxing/unboxing apis
+are horrid:
+
+```objectivec
 @implementation SnarlingBeastEvent
 + (id)initNew {
   return [super initWithAttributes: @{
@@ -421,12 +424,16 @@ accomplishes the same thing as the Ruby code with class macros.
     @"fur": @{
       @"min": [[NSNumber alloc]initWithDouble:3.0],
       @"max": [[NSNumber alloc]initWithDouble:7.0],
-      @"chance": [[NSNumber alloc]initWithDouble:1.7]
+      @"chance": [[NSNumber alloc]initWithDouble:1.0]
     }
   };
 }
 @end
+```
+Base class implementation. Preprocessor directive, plus
+implementation. The dictionary boxing/unboxing apis are horrid:
 
+```objectivec
 @interface EncounterEvent : NSObject
 @property NSString *title;
 @property NSString *text;
@@ -446,11 +453,14 @@ accomplishes the same thing as the Ruby code with class macros.
 @end
 ```
 
+Congratulations! You can now read and translate ObjectiveC to Ruby.
+
 ## Java to Ruby ##
 
-Here is how a `Person` class would be created in Java. There are
-two public members `firstName` and `lastName`, and an instance function
-called `sayHello` that returns a string.
+From a syntax standpoint, Java is pretty similar to Ruby (sans
+types). Here is how a `Person` class would be created in Java. There
+are two public members `firstName` and `lastName`, and an instance
+function called `sayHello` that returns a string.
 
 ### Class Construction ###
 
