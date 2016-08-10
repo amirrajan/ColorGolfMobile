@@ -11,3 +11,13 @@ end
 # For iOS specific settings, refer to config/ios.rb.
 # For OS X specific settings, refer to config/osx.rb.
 # For Android specific settings, refer to config/android.rb.
+
+task :ad => ['android:device']
+task :acd => ['android:clean', 'android:device']
+task :as => ['android:emulator']
+task :acs => ['android:clean', 'android:emulator']
+
+task :id => ['ios:device']
+task :icd => ['ios:clean', 'ios:device']
+task :is => ['ios:simulator']
+task :ics => ['ios:clean', 'ios:simulator']
