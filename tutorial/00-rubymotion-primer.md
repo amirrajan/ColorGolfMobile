@@ -23,8 +23,9 @@ tax you pay.
 ```bash
 export RUBYMOTION_ANDROID_SDK="/Users/YOURUSERNAME/.rubymotion-android/sdk"
 export RUBYMOTION_ANDROID_NDK="/Users/YOURUSERNAME/.rubymotion-android/ndk"
+alias adb='/Users/YOURUSERNAME/.rubymotion-android/sdk/platform-tools/adb -e logcat'
 ```
-- In a terminal, run `motion android-setup --api_version=20` and follow the prompts
+- In a terminal, run `motion android-setup --api_version=21` and follow the prompts
   (iOS is supported by default via XCode).
 - When the Android SDK Manager application pops up. Click the `Install
   X Packages ...` button and accept all the licenses. After all the
