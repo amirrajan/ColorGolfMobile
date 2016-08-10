@@ -179,7 +179,7 @@ end
 
 And here is the invocation:
 
-```
+```ruby
 person.setDobWithMonth(1, withDay: 1, withYear: 2013)
 ```
 
