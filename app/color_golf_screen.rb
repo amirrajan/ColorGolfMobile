@@ -14,6 +14,7 @@ class ColorGolfScreen < UI::Screen
     label.margin = [10, 10, 5, 10]
     label.text = "Hello world"
     label.text_alignment = :center
+    label.font = { name: 'Existence-Light', size: 16, extension: :otf }
     background.add_child(label)
     view.update_layout
   end
