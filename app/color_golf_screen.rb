@@ -47,11 +47,14 @@ class ColorGolfScreen < UI::Screen
       grid.align_self = :center
       21.times do |i|
         render "button#{i}", UI::Button do |button|
-          button.width = (header_width - 10 - 6 - 5) / 3
+          button.width = (header_width - 30).fdiv(3)
           button.height = 30
           button.margin = 1
           button.padding = 1
           button.title = "100%"
+          button.on :tap do
+            puts "booya"
+          end
           button.font = { name: 'Existence-Light', size: 16, extension: :otf }
           button.background_color = :white
           button.color = :black
