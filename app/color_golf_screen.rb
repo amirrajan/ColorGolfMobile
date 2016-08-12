@@ -1,9 +1,3 @@
-class FoobarClickListener
-  def onClick(button)
-    puts "booya"
-  end
-end
-
 class ColorGolfScreen < UI::Screen
   include ViewGeneration
 
