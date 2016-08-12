@@ -47,10 +47,10 @@ class ColorGolfScreen < UI::Screen
   end
 
   def render_rgb_grid
-    header_width = width_for(:header)
+    @header_width = width_for(:header)
 
     render! :grid, UI::View do |grid|
-      grid.width = header_width
+      grid.width = @header_width
       grid.margin = 10
       grid.flex_direction = :row
       grid.flex_wrap = :wrap
@@ -58,12 +58,11 @@ class ColorGolfScreen < UI::Screen
       grid.align_self = :center
       21.times do |i|
         render "button#{i}", UI::Button do |button|
-          button.width = (header_width - 30).fdiv(3)
+          button.width = (@header_width - 30).fdiv(3)
           button.height = 30
           button.margin = 1
           button.padding = 1
           button.title = "100%"
-          #commenting out this block removes the exception
           button.on :tap do
             puts "booya"
           end
