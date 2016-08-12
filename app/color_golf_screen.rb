@@ -1,3 +1,9 @@
+class FoobarClickListener
+  def onClick(button)
+    puts "booya"
+  end
+end
+
 class ColorGolfScreen < UI::Screen
   include ViewGeneration
 
@@ -35,7 +41,7 @@ class ColorGolfScreen < UI::Screen
       end
     end
 
-    header_width = get_view(:header).layout[2]
+    header_width = width_for(:header)
 
     render :grid, UI::View do |grid|
       grid.width = header_width
@@ -52,8 +58,12 @@ class ColorGolfScreen < UI::Screen
           button.margin = 1
           button.padding = 1
           button.title = "100%"
-          button.on :tap do
-            puts "booya"
+          if button.proxy.class.name == "UIButton"
+            button.on :tap do
+              puts "booya"
+            end
+          else
+            button.proxy.setOnClickListener(FoobarClickListener.new)
           end
           button.font = { name: 'Existence-Light', size: 16, extension: :otf }
           button.background_color = :white

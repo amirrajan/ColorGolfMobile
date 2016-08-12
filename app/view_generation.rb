@@ -18,8 +18,18 @@ module ViewGeneration
     @views[id]
   end
 
-  def set_view id, view
+  def set_view id, v
     @views ||= {}
-    @views[id] = view
+    @views[id] = v
+  end
+
+  def width_for id
+    width_for_view(get_view(id))
+  end
+
+  def width_for_view v
+    return v.width if v.width.to_s != "NaN"
+
+    width_for_view(v.parent)
   end
 end
