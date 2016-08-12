@@ -64,11 +64,9 @@ class ColorGolfScreen < UI::Screen
           button.padding = 1
           button.title = "100%"
           #commenting out this block removes the exception
-          #=begin
           button.on :tap do
             puts "booya"
           end
-          #=end
           button.font = font
           button.color = :black
         end
