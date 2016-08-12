@@ -13,22 +13,32 @@ class ColorGolfScreen < UI::Screen
 
   def on_load
     $self = self
-    reload
+    render_view
   end
 
-  def reload
+  def render_view
     view.children.each { |x| view.delete_child(x) }
     view.flex = 1
     view.background_color = :white
     view.margin = 5
 
+    render_hole
+    render_target_color_square
+    render_rgb_grid
+
+    view.update_layout
+  end
+
+  def render_hole
     render :hole, UI::Label do |hole|
       hole.margin = [25, 10, 5, 10]
       hole.text = "Hole 1 of 9"
       hole.text_alignment = :center
       hole.font = { name: 'Existence-Light', size: 16, extension: :otf }
     end
+  end
 
+  def render_target_color_square
     render! :header, UI::View do |header|
       header.margin = 0
       header.background_color = :white
@@ -40,7 +50,9 @@ class ColorGolfScreen < UI::Screen
         square.background_color = :pink
       end
     end
+  end
 
+  def render_rgb_grid
     header_width = width_for(:header)
 
     render :grid, UI::View do |grid|
@@ -58,12 +70,8 @@ class ColorGolfScreen < UI::Screen
           button.margin = 1
           button.padding = 1
           button.title = "100%"
-          if true
-            button.on :tap do
-              puts "booya"
-            end
-          else
-            button.proxy.setOnClickListener(FoobarClickListener.new)
+          button.on :tap do
+            puts "booya"
           end
           button.font = { name: 'Existence-Light', size: 16, extension: :otf }
           button.background_color = :white
@@ -71,7 +79,5 @@ class ColorGolfScreen < UI::Screen
         end
       end
     end
-
-    view.update_layout
   end
 end
