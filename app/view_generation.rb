@@ -28,7 +28,7 @@ module ViewGeneration
   end
 
   def width_for_view v
-    return v.width if v.width.to_s != "NaN"
+    return v.width if !v.width.nan?
 
     width_for_view(v.parent)
   end

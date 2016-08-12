@@ -58,7 +58,7 @@ class ColorGolfScreen < UI::Screen
           button.margin = 1
           button.padding = 1
           button.title = "100%"
-          if button.proxy.class.name == "UIButton"
+          if true
             button.on :tap do
               puts "booya"
             end
