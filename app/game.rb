@@ -43,21 +43,33 @@ class Game
     @target_color_r = @colors_options_r.sample
     @target_color_g = @colors_options_g.sample
     @target_color_b = @colors_options_b.sample
+
+    @player_color_r = nil
+    @player_color_g = nil
+    @player_color_b = nil
+
     @hole += 1
+  end
+
+  def score
+    @swings - @hole
   end
 
   def swing_for_r r
     @player_color_r = r
+    return if !player_color
     @swings += 1
   end
 
   def swing_for_g g
     @player_color_g = g
+    return if !player_color
     @swings += 1
   end
 
   def swing_for_b b
     @player_color_b = b
+    return if !player_color
     @swings += 1
   end
 end

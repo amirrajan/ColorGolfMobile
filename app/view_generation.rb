@@ -5,6 +5,7 @@ module ViewGeneration
     should_add = !@views[id]
     v = @views[id] || klass.new
     @current_parent = v
+    v.height = 30 if v.is_a? UI::Button
     yield v
     set_view id, v
     @current_parent = previous_parent

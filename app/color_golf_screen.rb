@@ -18,11 +18,11 @@ class ColorGolfScreen < UI::Screen
   end
 
   def update
-    get_view(:hole).text = "Hole #{@game.hole} of 9"
-    get_view(:target_color).background_color = @game.target_color
+    get_view(:hole).text = "Hole #{game.hole} of 9"
+    get_view(:target_color).background_color = game.target_color
 
-    if @game.player_color
-      get_view(:player_color).background_color = @game.player_color
+    if game.player_color
+      get_view(:player_color).background_color = game.player_color
       get_view(:player_color).text = " "
     else
       get_view(:player_color).background_color = :white
@@ -30,12 +30,14 @@ class ColorGolfScreen < UI::Screen
     end
 
     cell_ids.each do |k, v|
-      if(v[:value] == @game.send(v[:prop]))
+      if(v[:value] == game.send(v[:prop]))
         get_view(k).background_color = "f5f5f5"
       else
         get_view(k).background_color = :white
       end
     end
+
+    get_view(:next_hole_button).hidden = !game.correct?
   end
 
   def cell_ids
@@ -69,11 +71,14 @@ class ColorGolfScreen < UI::Screen
     render_target_color_square
     render_player_color_square
     render_rgb_grid
+    render_next_hole_button
+
+    view.update_layout
   end
 
   def render_hole
     render :hole, UI::Label do |hole|
-      hole.text = "Hole #{@game.hole} of 9"
+      hole.text = "Hole #{game.hole} of 9"
       hole.margin = [25, 10, 5, 10]
       hole.text_alignment = :center
       hole.font = font
@@ -81,7 +86,7 @@ class ColorGolfScreen < UI::Screen
   end
 
   def render_target_color_square
-    render! :target_color_wraper, UI::View do |header|
+    render :target_color_wraper, UI::View do |header|
       header.margin = 5
       render :target_color_border, UI::View do |border|
         border.background_color = :silver
@@ -99,7 +104,7 @@ class ColorGolfScreen < UI::Screen
   end
 
   def render_player_color_square
-    render! :player_color_wraper, UI::View do |header|
+    render :player_color_wraper, UI::View do |header|
       header.margin = 5
       render :player_color_border, UI::View do |border|
         border.background_color = :silver
@@ -123,7 +128,7 @@ class ColorGolfScreen < UI::Screen
 
     cell_width = (header_width - 30).fdiv(3)
 
-    render! :grid, UI::View do |grid|
+    render :grid, UI::View do |grid|
       grid.width = header_width
       grid.margin = 10
       grid.flex_direction = :row
@@ -169,7 +174,7 @@ class ColorGolfScreen < UI::Screen
       button.padding = 1
       button.title = text
       button.on :tap do
-        @game.send(target_swing, value)
+        game.send(target_swing, value)
         update
       end
       button.font = font
@@ -178,8 +183,20 @@ class ColorGolfScreen < UI::Screen
     end
   end
 
+  def render_next_hole_button
+    render :next_hole_button, UI::Button do |button|
+      button.height = 30
+      button.title = "Next Hole"
+      button.font = font
+      button.color = :black
+      button.on :tap do
+        game.next_hole
+        update
+      end
+    end
+  end
+
   def font
     { name: 'Existence-Light', size: 16, extension: :otf }
   end
-
 end
