@@ -172,8 +172,8 @@ how you would do exact same thing in Ruby.
 
 ```ruby
 def setDobWithMonth(month,
-  withDay: day,
-  withYear: year)
+  withDay,
+  withYear)
 
 end
 ```

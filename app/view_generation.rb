@@ -1,12 +1,14 @@
 module ViewGeneration
   def render id, klass
+    @views ||= { }
     previous_parent = (@current_parent || view)
-    v = klass.new
+    should_add = !@views[id]
+    v = @views[id] || klass.new
     @current_parent = v
     yield v
     set_view id, v
     @current_parent = previous_parent
-    @current_parent.add_child(v)
+    @current_parent.add_child(v) if should_add
   end
 
   def render! id, klass, &block
@@ -19,7 +21,6 @@ module ViewGeneration
   end
 
   def set_view id, v
-    @views ||= {}
     @views[id] = v
   end
 
