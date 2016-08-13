@@ -10,15 +10,11 @@ class ColorGolfScreen < UI::Screen
   def on_load
     $self = self
     @game = Game.new(
-      colors_options_r: ["00", "33", "66", "99", "CC", "FF"],
-      colors_options_g: ["00", "33", "66", "99", "CC", "FF"],
-      colors_options_b: ["00", "33", "66", "99", "CC", "FF"])
+      colors_options_r: ["00", "33", "66", "99", "cc", "ff"],
+      colors_options_g: ["00", "33", "66", "99", "cc", "ff"],
+      colors_options_b: ["00", "33", "66", "99", "cc", "ff"])
     render_view
     update
-  end
-
-  def font
-    { name: 'Existence-Light', size: 16, extension: :otf }
   end
 
   def update
@@ -34,9 +30,10 @@ class ColorGolfScreen < UI::Screen
     end
 
     cell_ids.each do |k, v|
-      get_view(k).background_color = :white
       if(v[:value] == @game.send(v[:prop]))
         get_view(k).background_color = "f5f5f5"
+      else
+        get_view(k).background_color = :white
       end
     end
   end
@@ -180,4 +177,9 @@ class ColorGolfScreen < UI::Screen
       button.background_color = :white
     end
   end
+
+  def font
+    { name: 'Existence-Light', size: 16, extension: :otf }
+  end
+
 end
