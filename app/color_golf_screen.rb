@@ -7,12 +7,16 @@ class ColorGolfScreen < UI::Screen
     self.navigation.hide_bar
   end
 
-  def on_load
-    $self = self
+  def new_game
     @game = Game.new(
       colors_options_r: ["00", "33", "66", "99", "cc", "ff"],
       colors_options_g: ["00", "33", "66", "99", "cc", "ff"],
       colors_options_b: ["00", "33", "66", "99", "cc", "ff"])
+  end
+
+  def on_load
+    $self = self
+    new_game
     render_view
     update
   end
@@ -38,6 +42,20 @@ class ColorGolfScreen < UI::Screen
     end
 
     get_view(:next_hole_button).hidden = !game.correct?
+
+    if game.hole == 9 and game.correct?
+      get_view(:next_hole_button).hidden = true
+      get_view(:new_game_button).hidden = false
+    else
+      get_view(:new_game_button).hidden = true
+    end
+
+
+    if(game.score <= 0)
+      get_view(:final_score).text = "Score: PAR"
+    else
+      get_view(:final_score).text = "Score: +#{game.score}"
+    end
   end
 
   def cell_ids
@@ -68,10 +86,11 @@ class ColorGolfScreen < UI::Screen
     view.margin = 5
 
     render_hole
+    render_final_score
     render_target_color_square
     render_player_color_square
+    render_next_hole_new_game_button
     render_rgb_grid
-    render_next_hole_button
 
     view.update_layout
   end
@@ -81,7 +100,6 @@ class ColorGolfScreen < UI::Screen
       hole.text = "Hole #{game.hole} of 9"
       hole.margin = [25, 10, 5, 10]
       hole.text_alignment = :center
-      hole.font = font
     end
   end
 
@@ -141,7 +159,6 @@ class ColorGolfScreen < UI::Screen
         label.text = "R"
         label.align_self = :center
         label.text_alignment = :center
-        label.font = font
       end
 
       render :g_header, UI::Label do |label|
@@ -149,7 +166,6 @@ class ColorGolfScreen < UI::Screen
         label.text = "G"
         label.align_self = :center
         label.text_alignment = :center
-        label.font = font
       end
 
       render :b_header, UI::Label do |label|
@@ -157,7 +173,6 @@ class ColorGolfScreen < UI::Screen
         label.text = "B"
         label.align_self = :center
         label.text_alignment = :center
-        label.font = font
       end
 
       cell_ids.each do |k, v|
@@ -177,26 +192,42 @@ class ColorGolfScreen < UI::Screen
         game.send(target_swing, value)
         update
       end
-      button.font = font
-      button.color = :black
       button.background_color = :white
     end
   end
 
-  def render_next_hole_button
+  def render_next_hole_new_game_button
     render :next_hole_button, UI::Button do |button|
       button.height = 30
       button.title = "Next Hole"
-      button.font = font
-      button.color = :black
+      button.color = "2a5db0"
+      button.font = font.merge({ size: 20 })
       button.on :tap do
         game.next_hole
         update
       end
     end
+
+    render :new_game_button, UI::Button do |button|
+      button.height = 30
+      button.title = "Go Again"
+      button.color = "2a5db0"
+      button.font = font.merge({ size: 20 })
+      button.on :tap do
+        new_game
+        update
+      end
+    end
+  end
+
+  def render_final_score
+    render :final_score, UI::Label do |label|
+      label.height = 30
+      label.text_alignment = :center
+    end
   end
 
   def font
-    { name: 'Existence-Light', size: 16, extension: :otf }
+    { name: 'Existence-Light', size: 18, extension: :otf }
   end
 end
