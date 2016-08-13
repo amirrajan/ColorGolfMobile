@@ -24,18 +24,17 @@ class ColorGolfScreen < UI::Screen
   def update
     get_view(:hole).text = "Hole #{game.hole} of 9"
     get_view(:target_color).background_color = game.target_color
+    get_view(:player_color).background_color = game.player_color || :white
 
     if game.player_color
-      get_view(:player_color).background_color = game.player_color
       get_view(:player_color).text = " "
     else
-      get_view(:player_color).background_color = :white
       get_view(:player_color).text = "?"
     end
 
     cell_ids.each do |k, v|
       if(v[:value] == game.send(v[:prop]))
-        get_view(k).background_color = "f5f5f5"
+        get_view(k).background_color = white_smoke
       else
         get_view(k).background_color = :white
       end
@@ -43,19 +42,14 @@ class ColorGolfScreen < UI::Screen
 
     get_view(:next_hole_button).hidden = !game.correct?
 
-    if game.hole == 9 and game.correct?
+    if game.over?
       get_view(:next_hole_button).hidden = true
       get_view(:new_game_button).hidden = false
     else
       get_view(:new_game_button).hidden = true
     end
 
-
-    if(game.score <= 0)
-      get_view(:final_score).text = "Score: PAR"
-    else
-      get_view(:final_score).text = "Score: +#{game.score}"
-    end
+    get_view(:final_score).text = "Score: #{@game.score_string}"
   end
 
   def cell_ids
@@ -200,7 +194,7 @@ class ColorGolfScreen < UI::Screen
     render :next_hole_button, UI::Button do |button|
       button.height = 30
       button.title = "Next Hole"
-      button.color = "2a5db0"
+      button.color = bluish
       button.font = font.merge({ size: 20 })
       button.on :tap do
         game.next_hole
@@ -211,7 +205,7 @@ class ColorGolfScreen < UI::Screen
     render :new_game_button, UI::Button do |button|
       button.height = 30
       button.title = "Go Again"
-      button.color = "2a5db0"
+      button.color = bluish
       button.font = font.merge({ size: 20 })
       button.on :tap do
         new_game
@@ -229,5 +223,13 @@ class ColorGolfScreen < UI::Screen
 
   def font
     { name: 'Existence-Light', size: 18, extension: :otf }
+  end
+
+  def bluish
+    "2a5db0"
+  end
+
+  def white_smoke
+    "f5f5f5"
   end
 end

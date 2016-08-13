@@ -72,4 +72,14 @@ class Game
     return if !player_color
     @swings += 1
   end
+
+  def over?
+    hole == 9 and correct?
+  end
+
+  def score_string
+    return "PAR" if score <= 0
+
+    score
+  end
 end
