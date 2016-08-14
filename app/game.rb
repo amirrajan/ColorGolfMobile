@@ -85,4 +85,34 @@ class Game
 
     score
   end
+
+  def self.stats history
+    if history.length == 0
+      return "First game huh? Select the right Red, Green, and Blue percentages to progress to the next hole. There are nine holes in total. Good luck."
+    end
+
+    perfect_score_count = history.find_all { |i| i == 0 }.count
+
+    if perfect_score_count > 0
+      return "I cannot believe this. You've gotten a perfect score #{perfect_score_count} time(s). Your average score across #{history.count} game(s) is #{history.inject{ |sum, el| sum + el }.fdiv(history.size)}."
+    end
+
+    if history.length == 1
+      return "Excellent, you've got a game under your belt. Now to improve on your score of #{history.first} strokes."
+    end
+
+    return [
+      "It helps if you where a black turtle neck sweater and barratte.",
+      stats_average(history),
+      stats_all_time_best(history),
+    ].sample
+  end
+
+  def self.stats_average history
+    "You've played #{history.length} game(s). Your average score across those game(s) is #{history.inject{ |sum, el| sum + el }.fdiv(history.size)}."
+  end
+
+  def self.stats_all_time_best history
+    "Your all time best score is #{history.min}. Time will tell if you can beat that."
+  end
 end

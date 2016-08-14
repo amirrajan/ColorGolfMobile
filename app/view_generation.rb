@@ -4,9 +4,13 @@ module ViewGeneration
     previous_parent = (@current_parent || view)
     should_add = !@views[id]
     v = @views[id] || klass.new
+    if id == :none
+      v = klass.new
+      should_add = true
+    end
     @current_parent = v
     v.height = 30 if v.is_a?(UI::Label)
-    v.height = 44 if v.is_a?(UI::Button)
+    v.height = 35 if v.is_a?(UI::Button)
     v.color = :black if has_text? v
     v.font = font if has_text? v
     yield v

@@ -51,9 +51,14 @@ class ColorGolfScreen < UI::Screen
       get_view(:new_game_button).hidden = true
     end
 
-    get_view(:final_score).text = "Score: #{@game.score_string}"
+    get_view(:score).text = "Score: #{@game.score_string}"
+    get_view(:stat_text).text = random_stat_text
 
     save_game
+  end
+
+  def random_stat_text
+    Game.stats(Store["history"] || [])
   end
 
   def available_percentages
@@ -70,9 +75,26 @@ class ColorGolfScreen < UI::Screen
     @cell_ids = Hash.new
 
     available_percentages.each do |tuple|
-      @cell_ids["r_#{tuple[0]}".to_sym] = { method: :swing_for_r, prop: :player_color_r, value: tuple[0], text: tuple[1] }
-      @cell_ids["g_#{tuple[0]}".to_sym] = { method: :swing_for_g, prop: :player_color_g, value: tuple[0], text: tuple[1] }
-      @cell_ids["b_#{tuple[0]}".to_sym] = { method: :swing_for_b, prop: :player_color_b, value: tuple[0], text: tuple[1] }
+      @cell_ids["r_#{tuple[0]}".to_sym] = {
+        method: :swing_for_r,
+        prop: :player_color_r,
+        value: tuple[0],
+        text: tuple[1]
+      }
+
+      @cell_ids["g_#{tuple[0]}".to_sym] = {
+        method: :swing_for_g,
+        prop: :player_color_g,
+        value: tuple[0],
+        text: tuple[1]
+      }
+
+      @cell_ids["b_#{tuple[0]}".to_sym] = {
+        method: :swing_for_b,
+        prop: :player_color_b,
+        value: tuple[0],
+        text: tuple[1]
+      }
     end
 
     @cell_ids
@@ -88,6 +110,7 @@ class ColorGolfScreen < UI::Screen
     render_player_color_square
     render_next_hole_new_game_button
     render_rgb_grid
+    render_stat_text
 
     view.update_layout
   end
@@ -95,15 +118,15 @@ class ColorGolfScreen < UI::Screen
   def render_hole
     render :hole, UI::Label do |hole|
       hole.text = "Hole #{game.hole} of 9"
-      hole.margin = [45, 10, 5, 10]
+      hole.margin = [20, 10, 5, 10]
       hole.text_alignment = :center
     end
   end
 
   def render_target_color_square
-    render :target_color_wraper, UI::View do |header|
+    render :target_color_wrapper, UI::View do |header|
       header.margin = 5
-      render :target_color_border, UI::View do |border|
+      render :none, UI::View do |border|
         border.background_color = :silver
         border.width = 72
         border.height = 72
@@ -119,9 +142,9 @@ class ColorGolfScreen < UI::Screen
   end
 
   def render_player_color_square
-    render :player_color_wraper, UI::View do |header|
+    render :none, UI::View do |header|
       header.margin = 5
-      render :player_color_border, UI::View do |border|
+      render :none, UI::View do |border|
         border.background_color = :silver
         border.width = 72
         border.height = 72
@@ -139,11 +162,11 @@ class ColorGolfScreen < UI::Screen
   end
 
   def render_rgb_grid
-    header_width = width_for(:target_color_wraper)
+    header_width = width_for(:target_color_wrapper)
 
     cell_width = (header_width - 30).fdiv(3)
 
-    render :grid, UI::View do |grid|
+    render :none, UI::View do |grid|
       grid.width = header_width
       grid.margin = 5
       grid.flex_direction = :row
@@ -151,21 +174,21 @@ class ColorGolfScreen < UI::Screen
       grid.justify_content = :center
       grid.align_self = :center
 
-      render :r_header, UI::Label do |label|
+      render :none, UI::Label do |label|
         label.width = cell_width
         label.text = "Red"
         label.align_self = :center
         label.text_alignment = :center
       end
 
-      render :g_header, UI::Label do |label|
+      render :none, UI::Label do |label|
         label.width = cell_width
         label.text = "Green"
         label.align_self = :center
         label.text_alignment = :center
       end
 
-      render :b_header, UI::Label do |label|
+      render :none, UI::Label do |label|
         label.width = cell_width
         label.text = "Blue"
         label.align_self = :center
@@ -208,15 +231,26 @@ class ColorGolfScreen < UI::Screen
       button.color = bluish
       button.font = font.merge({ size: 20 })
       button.on :tap do
+        save_history
         new_game
         update
+        save_game
       end
     end
   end
 
   def render_final_score
-    render :final_score, UI::Label do |label|
+    render :score, UI::Label do |label|
       label.text_alignment = :center
+    end
+  end
+
+  def render_stat_text
+    render :stat_text, UI::Label do |label|
+      label.text_alignment = :center
+      label.height = 60
+      label.margin = 10
+      label.font = font.merge({ size: 14 })
     end
   end
 
@@ -241,6 +275,10 @@ class ColorGolfScreen < UI::Screen
     Store["target_color_r"] = game.target_color_r
     Store["target_color_g"] = game.target_color_g
     Store["target_color_b"] = game.target_color_b
+  end
+
+  def save_history
+    Store["history"] = (Store["history"] || []) + [game.score] if game.over?
   end
 
   def load_game
