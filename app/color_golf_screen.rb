@@ -8,10 +8,11 @@ class ColorGolfScreen < UI::Screen
   end
 
   def new_game
+    rgb_options = available_percentages.map { |t| t[0] }
     @game = Game.new(
-      colors_options_r: ["00", "33", "66", "99", "cc", "ff"],
-      colors_options_g: ["00", "33", "66", "99", "cc", "ff"],
-      colors_options_b: ["00", "33", "66", "99", "cc", "ff"])
+      colors_options_r: rgb_options,
+      colors_options_g: rgb_options,
+      colors_options_b: rgb_options)
   end
 
   def on_load
@@ -53,27 +54,26 @@ class ColorGolfScreen < UI::Screen
     get_view(:final_score).text = "Score: #{@game.score_string}"
   end
 
+  def available_percentages
+    @available_percentages ||= [["ff", "100%"],
+                                ["bf", "75%"],
+                                ["80", "50%"],
+                                ["3f", "25%"],
+                                ["00", "0%"]]
+  end
+
   def cell_ids
-    @cell_ids ||= {
-      r_ff: { method: :swing_for_r, prop: :player_color_r, value: "ff", text: "100%" },
-      g_ff: { method: :swing_for_g, prop: :player_color_g, value: "ff", text: "100%" },
-      b_ff: { method: :swing_for_b, prop: :player_color_b, value: "ff", text: "100%" },
-      r_cc: { method: :swing_for_r, prop: :player_color_r, value: "cc", text: "80%"  },
-      g_cc: { method: :swing_for_g, prop: :player_color_g, value: "cc", text: "80%"  },
-      b_cc: { method: :swing_for_b, prop: :player_color_b, value: "cc", text: "80%"  },
-      r_99: { method: :swing_for_r, prop: :player_color_r, value: "99", text: "60%"  },
-      g_99: { method: :swing_for_g, prop: :player_color_g, value: "99", text: "60%"  },
-      b_99: { method: :swing_for_b, prop: :player_color_b, value: "99", text: "60%"  },
-      r_66: { method: :swing_for_r, prop: :player_color_r, value: "66", text: "40%"  },
-      g_66: { method: :swing_for_g, prop: :player_color_g, value: "66", text: "40%"  },
-      b_66: { method: :swing_for_b, prop: :player_color_b, value: "66", text: "40%"  },
-      r_33: { method: :swing_for_r, prop: :player_color_r, value: "33", text: "20%"  },
-      g_33: { method: :swing_for_g, prop: :player_color_g, value: "33", text: "20%"  },
-      b_33: { method: :swing_for_b, prop: :player_color_b, value: "33", text: "20%"  },
-      r_00: { method: :swing_for_r, prop: :player_color_r, value: "00", text: "0%"   },
-      g_00: { method: :swing_for_g, prop: :player_color_g, value: "00", text: "0%"   },
-      b_00: { method: :swing_for_b, prop: :player_color_b, value: "00", text: "0%"   }
-    }
+    return @cell_ids if @cell_ids
+
+    @cell_ids = Hash.new
+
+    available_percentages.each do |tuple|
+      @cell_ids["r_#{tuple[0]}".to_sym] = { method: :swing_for_r, prop: :player_color_r, value: tuple[0], text: tuple[1] }
+      @cell_ids["g_#{tuple[0]}".to_sym] = { method: :swing_for_g, prop: :player_color_g, value: tuple[0], text: tuple[1] }
+      @cell_ids["b_#{tuple[0]}".to_sym] = { method: :swing_for_b, prop: :player_color_b, value: tuple[0], text: tuple[1] }
+    end
+
+    @cell_ids
   end
 
   def render_view
