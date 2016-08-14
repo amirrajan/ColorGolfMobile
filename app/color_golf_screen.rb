@@ -41,6 +41,7 @@ class ColorGolfScreen < UI::Screen
     end
 
     get_view(:next_hole_button).hidden = !game.correct?
+    get_view(:new_game_button).title = "Final Score: #{game.score}, Go Again"
 
     if game.over?
       get_view(:next_hole_button).hidden = true
@@ -92,7 +93,7 @@ class ColorGolfScreen < UI::Screen
   def render_hole
     render :hole, UI::Label do |hole|
       hole.text = "Hole #{game.hole} of 9"
-      hole.margin = [25, 10, 5, 10]
+      hole.margin = [20, 10, 5, 10]
       hole.text_alignment = :center
     end
   end
@@ -178,7 +179,6 @@ class ColorGolfScreen < UI::Screen
   def render_rgb_button id, target_swing, value, text, width
     render id, UI::Button do |button|
       button.width = width
-      button.height = 30
       button.margin = 1
       button.padding = 1
       button.title = text
@@ -192,7 +192,6 @@ class ColorGolfScreen < UI::Screen
 
   def render_next_hole_new_game_button
     render :next_hole_button, UI::Button do |button|
-      button.height = 30
       button.title = "Next Hole"
       button.color = bluish
       button.font = font.merge({ size: 20 })
@@ -203,7 +202,6 @@ class ColorGolfScreen < UI::Screen
     end
 
     render :new_game_button, UI::Button do |button|
-      button.height = 30
       button.title = "Go Again"
       button.color = bluish
       button.font = font.merge({ size: 20 })
@@ -216,7 +214,6 @@ class ColorGolfScreen < UI::Screen
 
   def render_final_score
     render :final_score, UI::Label do |label|
-      label.height = 30
       label.text_alignment = :center
     end
   end
