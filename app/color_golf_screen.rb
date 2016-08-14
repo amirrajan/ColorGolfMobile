@@ -103,12 +103,12 @@ class ColorGolfScreen < UI::Screen
       header.margin = 5
       render :target_color_border, UI::View do |border|
         border.background_color = :silver
-        border.width = 82
-        border.height = 82
+        border.width = 72
+        border.height = 72
         border.align_self = :center
         render :target_color, UI::View do |square|
-          square.width = 80
-          square.height = 80
+          square.width = 70
+          square.height = 70
           square.margin = 1
           square.align_self = :center
         end
@@ -121,12 +121,12 @@ class ColorGolfScreen < UI::Screen
       header.margin = 5
       render :player_color_border, UI::View do |border|
         border.background_color = :silver
-        border.width = 82
-        border.height = 82
+        border.width = 72
+        border.height = 72
         border.align_self = :center
         render :player_color, UI::Label do |square|
-          square.width = 80
-          square.height = 80
+          square.width = 70
+          square.height = 70
           square.margin = 1
           square.align_self = :center
           square.text_alignment = :center
@@ -143,7 +143,7 @@ class ColorGolfScreen < UI::Screen
 
     render :grid, UI::View do |grid|
       grid.width = header_width
-      grid.margin = 10
+      grid.margin = 5
       grid.flex_direction = :row
       grid.flex_wrap = :wrap
       grid.justify_content = :center
@@ -151,21 +151,21 @@ class ColorGolfScreen < UI::Screen
 
       render :r_header, UI::Label do |label|
         label.width = cell_width
-        label.text = "R"
+        label.text = "Red"
         label.align_self = :center
         label.text_alignment = :center
       end
 
       render :g_header, UI::Label do |label|
         label.width = cell_width
-        label.text = "G"
+        label.text = "Green"
         label.align_self = :center
         label.text_alignment = :center
       end
 
       render :b_header, UI::Label do |label|
         label.width = cell_width
-        label.text = "B"
+        label.text = "Blue"
         label.align_self = :center
         label.text_alignment = :center
       end
