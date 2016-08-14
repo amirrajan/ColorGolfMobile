@@ -17,7 +17,7 @@ class ColorGolfScreen < UI::Screen
 
   def on_load
     $self = self
-    new_game
+    load_game
     render_view
     update
   end
@@ -52,6 +52,8 @@ class ColorGolfScreen < UI::Screen
     end
 
     get_view(:final_score).text = "Score: #{@game.score_string}"
+
+    save_game
   end
 
   def available_percentages
@@ -93,7 +95,7 @@ class ColorGolfScreen < UI::Screen
   def render_hole
     render :hole, UI::Label do |hole|
       hole.text = "Hole #{game.hole} of 9"
-      hole.margin = [20, 10, 5, 10]
+      hole.margin = [45, 10, 5, 10]
       hole.text_alignment = :center
     end
   end
@@ -228,5 +230,28 @@ class ColorGolfScreen < UI::Screen
 
   def white_smoke
     "f5f5f5"
+  end
+
+  def save_game
+    Store["hole"] = game.hole
+    Store["swings"] = game.swings
+    Store["player_color_r"] = game.player_color_r
+    Store["player_color_g"] = game.player_color_g
+    Store["player_color_b"] = game.player_color_b
+    Store["target_color_r"] = game.target_color_r
+    Store["target_color_g"] = game.target_color_g
+    Store["target_color_b"] = game.target_color_b
+  end
+
+  def load_game
+    new_game
+    game.hole = Store["hole"] || game.hole
+    game.swings = Store["swings"] || game.swings
+    game.player_color_r = Store["player_color_r"] || game.player_color_r
+    game.player_color_g = Store["player_color_g"] || game.player_color_g
+    game.player_color_b = Store["player_color_b"] || game.player_color_b
+    game.target_color_r = Store["target_color_r"] || game.target_color_r
+    game.target_color_g = Store["target_color_g"] || game.target_color_g
+    game.target_color_b = Store["target_color_b"] || game.target_color_b
   end
 end
