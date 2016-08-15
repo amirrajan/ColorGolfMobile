@@ -55,24 +55,21 @@ class Game
   end
 
   def score
-    @swings - @hole
+    @swings - (@hole * 3)
   end
 
   def swing_for_r r
     @player_color_r = r
-    return if !player_color
     @swings += 1
   end
 
   def swing_for_g g
     @player_color_g = g
-    return if !player_color
     @swings += 1
   end
 
   def swing_for_b b
     @player_color_b = b
-    return if !player_color
     @swings += 1
   end
 
@@ -109,9 +106,9 @@ class Game
   end
 
   def cheat
-     @player_color_r = @target_color_r
-     @player_color_g = @target_color_g
-     @player_color_b = @target_color_b
+     swing_for_r @target_color_r
+     swing_for_g @target_color_g
+     swing_for_b @target_color_b
   end
 
   def self.stats_average history

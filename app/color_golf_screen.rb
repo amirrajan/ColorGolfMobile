@@ -43,18 +43,18 @@ class ColorGolfScreen < UI::Screen
     end
 
     if game.correct?
-      show(:next_hole_button)
+      get_view(:next_hole_button).hidden = false
     else
-      hide(:next_hole_button)
+      get_view(:next_hole_button).hidden = true
     end
 
     get_view(:new_game_button).title = "Final Score: #{game.score}, Go Again"
 
     if game.over?
-      hide(:next_hole_button)
-      show(:new_game_button)
+      get_view(:next_hole_button).hidden = true
+      get_view(:new_game_button).hidden = false
     else
-      hide(:new_game_button)
+      get_view(:new_game_button).hidden = true
     end
 
     get_view(:score).text = "Score: #{@game.score_string}"

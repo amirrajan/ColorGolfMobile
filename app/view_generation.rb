@@ -1,7 +1,6 @@
 module ViewGeneration
   def render id, klass
     @views ||= { }
-    @meta_data ||= { }
     previous_parent = (@current_parent || view)
     should_add = !@views[id]
     v = @views[id] || klass.new
@@ -45,22 +44,5 @@ module ViewGeneration
     return v.width if !v.width.nan?
 
     width_for_view(v.parent)
-  end
-
-  def hide id
-    v = get_view(id)
-    @meta_data[id] = { width: width_for_view(v) }
-    v.width = 0
-    v.height = 0
-    v.hidden = true
-  end
-
-  def show id
-    v = get_view(id)
-    original_values = @meta_data[id]
-    if(original_values)
-      v.width = original_values[:height]
-    end
-    v.hidden = false
   end
 end

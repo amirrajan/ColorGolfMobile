@@ -15,15 +15,15 @@ describe "game" do
 
       game.swing_for_r("00")
       game.correct?.should.equal false
-      game.swings.should.equal 0
+      game.swings.should.equal 1
 
       game.swing_for_g("00")
       game.correct?.should.equal false
-      game.swings.should.equal 0
+      game.swings.should.equal 2
 
       game.swing_for_b("00")
       game.correct?.should.equal true
-      game.swings.should.equal 1
+      game.swings.should.equal 3
 
       game.score.should.equal 0
     end
@@ -37,16 +37,16 @@ describe "game" do
       game.target_color.should.equal "000000"
 
       game.swing_for_r("00")
-      game.swings.should.equal 0
-
-      game.swing_for_g("00")
-      game.swings.should.equal 0
-
-      game.swing_for_b("ff")
       game.swings.should.equal 1
 
-      game.swing_for_b("00")
+      game.swing_for_g("00")
       game.swings.should.equal 2
+
+      game.swing_for_b("ff")
+      game.swings.should.equal 3
+
+      game.swing_for_b("00")
+      game.swings.should.equal 4
 
       game.score.should.equal 1
     end
