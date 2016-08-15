@@ -220,29 +220,27 @@ class ColorGolfScreen < UI::Screen
   end
 
   def render_next_hole_new_game_button
-    render :button_wrapper, UI::View do view
-      render :next_hole_button, UI::Button do |button|
-        button.title = "Next Hole"
-        button.color = bluish
-        button.font = font.merge({ size: 20 })
-        button.on :tap do
-          game.next_hole
-          set_random_stat_text
-          update
-        end
+    render :next_hole_button, UI::Button do |button|
+      button.title = "Next Hole"
+      button.color = bluish
+      button.font = font.merge({ size: 20 })
+      button.on :tap do
+        game.next_hole
+        set_random_stat_text
+        update
       end
+    end
 
-      render :new_game_button, UI::Button do |button|
-        button.title = "Go Again"
-        button.color = bluish
-        button.font = font.merge({ size: 20 })
-        button.on :tap do
-          save_history
-          new_game
-          set_random_stat_text
-          update
-          save_game
-        end
+    render :new_game_button, UI::Button do |button|
+      button.title = "Go Again"
+      button.color = bluish
+      button.font = font.merge({ size: 20 })
+      button.on :tap do
+        save_history
+        new_game
+        set_random_stat_text
+        update
+        save_game
       end
     end
   end
