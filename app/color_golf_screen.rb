@@ -18,6 +18,7 @@ class ColorGolfScreen < UI::Screen
   def on_load
     $self = self
     load_game
+    set_random_stat_text
     render_view
     update
   end
@@ -52,13 +53,14 @@ class ColorGolfScreen < UI::Screen
     end
 
     get_view(:score).text = "Score: #{@game.score_string}"
-    get_view(:stat_text).text = random_stat_text
+
+    get_view(:stat_text).text = @random_stat_text
 
     save_game
   end
 
-  def random_stat_text
-    Game.stats(Store["history"] || [])
+  def set_random_stat_text
+    @random_stat_text = Game.stats(Store["history"] || [])
   end
 
   def available_percentages
@@ -222,6 +224,7 @@ class ColorGolfScreen < UI::Screen
       button.font = font.merge({ size: 20 })
       button.on :tap do
         game.next_hole
+        set_random_stat_text
         update
       end
     end
@@ -233,6 +236,7 @@ class ColorGolfScreen < UI::Screen
       button.on :tap do
         save_history
         new_game
+        set_random_stat_text
         update
         save_game
       end
@@ -248,7 +252,7 @@ class ColorGolfScreen < UI::Screen
   def render_stat_text
     render :stat_text, UI::Label do |label|
       label.text_alignment = :center
-      label.height = 60
+      label.height = 80
       label.margin = 10
       label.font = font.merge({ size: 14 })
     end
