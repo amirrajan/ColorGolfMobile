@@ -44,6 +44,7 @@ class ColorGolfScreen < UI::Screen
 
     if game.correct?
       get_view(:next_hole_button).hidden = false
+      get_view(:next_hole_button).height = 30
     else
       get_view(:next_hole_button).hidden = true
     end
@@ -53,6 +54,7 @@ class ColorGolfScreen < UI::Screen
     if game.over?
       get_view(:next_hole_button).hidden = true
       get_view(:new_game_button).hidden = false
+      get_view(:new_game_button).height = 30
     else
       get_view(:new_game_button).hidden = true
     end
@@ -60,6 +62,8 @@ class ColorGolfScreen < UI::Screen
     get_view(:score).text = "Score: #{@game.score_string}"
 
     get_view(:stat_text).text = @random_stat_text
+
+    view.update_layout
 
     save_game
   end
@@ -220,27 +224,29 @@ class ColorGolfScreen < UI::Screen
   end
 
   def render_next_hole_new_game_button
-    render :next_hole_button, UI::Button do |button|
-      button.title = "Next Hole"
-      button.color = bluish
-      button.font = font.merge({ size: 20 })
-      button.on :tap do
-        game.next_hole
-        set_random_stat_text
-        update
+    render :none, UI::View do |view|
+      render :next_hole_button, UI::Button do |button|
+        button.title = "Next Hole"
+        button.color = bluish
+        button.font = font.merge({ size: 20 })
+        button.on :tap do
+          game.next_hole
+          set_random_stat_text
+          update
+        end
       end
-    end
 
-    render :new_game_button, UI::Button do |button|
-      button.title = "Go Again"
-      button.color = bluish
-      button.font = font.merge({ size: 20 })
-      button.on :tap do
-        save_history
-        new_game
-        set_random_stat_text
-        update
-        save_game
+      render :new_game_button, UI::Button do |button|
+        button.title = "Go Again"
+        button.color = bluish
+        button.font = font.merge({ size: 20 })
+        button.on :tap do
+          save_history
+          new_game
+          set_random_stat_text
+          update
+          save_game
+        end
       end
     end
   end
