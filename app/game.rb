@@ -83,8 +83,20 @@ class Game
     score
   end
 
-  def self.stats history
-    if history.length == 0
+  def self.stats history, current_hole = 1
+    if history.length == 0 and current_hole > 3
+      return random_color_message
+    end
+
+    if history.length == 0 and current_hole == 3
+      return "Thirty percent there! More help. Red at 100% and Green and 50% make orange (kinda). Blue at 100% and Red at 50% make purple (kinda)."
+    end
+
+    if history.length == 0 and current_hole == 2
+      return "Excellent. Hole number two. Here's some help. Red at 100% and green at 100% make yellow. Red (100%) and blue (100%) make magenta. Blue (100%) and green (100%) make cyan."
+    end
+
+    if history.length == 0 and current_hole == 1
       return "First game huh? Select the right Red, Green, and Blue percentages to progress to the next hole. There are nine holes in total. Good luck."
     end
 

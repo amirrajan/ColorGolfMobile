@@ -69,7 +69,7 @@ class ColorGolfScreen < UI::Screen
   end
 
   def set_random_stat_text
-    @random_stat_text = Game.stats(Store["history"] || [])
+    @random_stat_text = Game.stats(Store["history"] || [], @game.hole)
   end
 
   def available_percentages
@@ -116,10 +116,9 @@ class ColorGolfScreen < UI::Screen
     render_final_score
     render_target_color_square
     render_player_color_square
-    render_next_hole_new_game_button
     render_rgb_grid
+    render_next_hole_new_game_button
     render_stat_text
-
     view.update_layout
   end
 
@@ -225,6 +224,7 @@ class ColorGolfScreen < UI::Screen
 
   def render_next_hole_new_game_button
     render :none, UI::View do |view|
+      view.height = 40
       render :next_hole_button, UI::Button do |button|
         button.title = "Next Hole"
         button.color = bluish
@@ -262,7 +262,7 @@ class ColorGolfScreen < UI::Screen
       label.text_alignment = :center
       label.height = 80
       label.margin = 10
-      label.font = font.merge({ size: 14 })
+      label.font = font.merge({ size: 16 })
     end
   end
 
