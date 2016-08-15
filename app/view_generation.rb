@@ -49,7 +49,7 @@ module ViewGeneration
 
   def hide id
     v = get_view(id)
-    @meta_data[id] = { width: v.width, height: v.height }
+    @meta_data[id] = { width: width_for_view(v) }
     v.width = 0
     v.height = 0
     v.hidden = true
@@ -60,7 +60,6 @@ module ViewGeneration
     original_values = @meta_data[id]
     if(original_values)
       v.width = original_values[:height]
-      v.height = original_values[:width]
     end
     v.hidden = false
   end

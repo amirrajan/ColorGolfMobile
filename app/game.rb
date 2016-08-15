@@ -108,6 +108,12 @@ class Game
     ].sample
   end
 
+  def cheat
+     @player_color_r = @target_color_r
+     @player_color_g = @target_color_g
+     @player_color_b = @target_color_b
+  end
+
   def self.stats_average history
     "You've played #{history.length} game(s). Your average score across those game(s) is #{history.inject{ |sum, el| sum + el }.fdiv(history.size).round(2)}."
   end

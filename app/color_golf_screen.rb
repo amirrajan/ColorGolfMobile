@@ -108,9 +108,6 @@ class ColorGolfScreen < UI::Screen
   end
 
   def render_view
-    view.flex = 1
-    view.margin = 5
-
     render_hole
     render_final_score
     render_target_color_square
@@ -302,5 +299,10 @@ class ColorGolfScreen < UI::Screen
     game.target_color_r = Store["target_color_r"] || game.target_color_r
     game.target_color_g = Store["target_color_g"] || game.target_color_g
     game.target_color_b = Store["target_color_b"] || game.target_color_b
+  end
+
+  def cheat
+    @game.cheat
+    update
   end
 end
