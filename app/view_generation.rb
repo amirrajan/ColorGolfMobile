@@ -1,5 +1,5 @@
 module ViewGeneration
-  def render id, klass
+  def render id, klass, &block
     @views ||= { }
     previous_parent = (@current_parent || view)
     should_add = !@views[id]
@@ -13,7 +13,7 @@ module ViewGeneration
     v.height = 35 if v.is_a?(UI::Button)
     v.color = :black if has_text? v
     v.font = font if has_text? v
-    yield v
+    block.call(v)
     set_view id, v
     @current_parent = previous_parent
     @current_parent.add_child(v) if should_add
