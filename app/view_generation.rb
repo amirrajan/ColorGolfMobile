@@ -11,15 +11,15 @@ module ViewGeneration
     @current_parent = v
     v.height = 30 if v.is_a?(UI::Label)
     v.height = 35 if v.is_a?(UI::Button)
-    v.color = :black if has_text? v
-    v.font = font if has_text? v
+    v.color = :black if text? v
+    v.font = font if text? v
     block.call(v)
     set_view id, v
     @current_parent = previous_parent
     @current_parent.add_child(v) if should_add
   end
 
-  def has_text? v
+  def text? v
     v.is_a?(UI::Button) || v.is_a?(UI::Label)
   end
 
@@ -41,7 +41,7 @@ module ViewGeneration
   end
 
   def width_for_view v
-    return v.width if !v.width.nan?
+    return v.width unless v.width.nan?
 
     width_for_view(v.parent)
   end

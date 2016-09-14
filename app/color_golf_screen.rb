@@ -4,15 +4,14 @@ class ColorGolfScreen < UI::Screen
   include ViewGeneration
 
   def on_show
-    self.navigation.hide_bar
+    navigation.hide_bar
   end
 
   def new_game
     rgb_options = available_percentages.map { |t| t[0] }
-    @game = Game.new(
-      colors_options_r: rgb_options,
-      colors_options_g: rgb_options,
-      colors_options_b: rgb_options)
+    @game = Game.new(colors_options_r: rgb_options,
+                     colors_options_g: rgb_options,
+                     colors_options_b: rgb_options)
   end
 
   def on_load
@@ -29,13 +28,13 @@ class ColorGolfScreen < UI::Screen
     get_view(:player_color).background_color = game.player_color || :white
 
     if game.player_color
-      get_view(:player_color).text = " "
+      get_view(:player_color).text = ' '
     else
-      get_view(:player_color).text = "?"
+      get_view(:player_color).text = '?'
     end
 
     cell_ids.each do |k, v|
-      if(v[:value] == game.send(v[:prop]))
+      if v[:value] == game.send(v[:prop])
         get_view(k).background_color = white_smoke
       else
         get_view(k).background_color = :white
@@ -69,21 +68,21 @@ class ColorGolfScreen < UI::Screen
   end
 
   def set_random_stat_text
-    @random_stat_text = Game.stats(Store["history"] || [], @game.hole)
+    @random_stat_text = Game.stats(Store['history'] || [], @game.hole)
   end
 
   def available_percentages
-    @available_percentages ||= [["ff", "100%"],
-                                ["bf", "75%"],
-                                ["80", "50%"],
-                                ["3f", "25%"],
-                                ["00", "0%"]]
+    @available_percentages ||= [%w(ff ff),
+                                %w(bf bf),
+                                %w(80 80),
+                                %w(3f 3f),
+                                %w(00 00)]
   end
 
   def cell_ids
     return @cell_ids if @cell_ids
 
-    @cell_ids = Hash.new
+    @cell_ids = {}
 
     available_percentages.each do |tuple|
       @cell_ids["r_#{tuple[0]}".to_sym] = {
@@ -183,21 +182,21 @@ class ColorGolfScreen < UI::Screen
 
       render :none, UI::Label do |label|
         label.width = cell_width
-        label.text = "Red"
+        label.text = 'Red'
         label.align_self = :center
         label.text_alignment = :center
       end
 
       render :none, UI::Label do |label|
         label.width = cell_width
-        label.text = "Green"
+        label.text = 'Green'
         label.align_self = :center
         label.text_alignment = :center
       end
 
       render :none, UI::Label do |label|
         label.width = cell_width
-        label.text = "Blue"
+        label.text = 'Blue'
         label.align_self = :center
         label.text_alignment = :center
       end
@@ -226,7 +225,7 @@ class ColorGolfScreen < UI::Screen
     render :none, UI::View do |view|
       view.height = 40
       render :next_hole_button, UI::Button do |button|
-        button.title = "Next Hole"
+        button.title = 'Next Hole'
         button.color = bluish
         button.font = font.merge({ size: 20 })
         button.on :tap do
@@ -237,7 +236,7 @@ class ColorGolfScreen < UI::Screen
       end
 
       render :new_game_button, UI::Button do |button|
-        button.title = "Go Again"
+        button.title = 'Go Again'
         button.color = bluish
         button.font = font.merge({ size: 20 })
         button.on :tap do
@@ -271,38 +270,38 @@ class ColorGolfScreen < UI::Screen
   end
 
   def bluish
-    "2a5db0"
+    '2a5db0'
   end
 
   def white_smoke
-    "f5f5f5"
+    'f5f5f5'
   end
 
   def save_game
-    Store["hole"] = game.hole
-    Store["swings"] = game.swings
-    Store["player_color_r"] = game.player_color_r
-    Store["player_color_g"] = game.player_color_g
-    Store["player_color_b"] = game.player_color_b
-    Store["target_color_r"] = game.target_color_r
-    Store["target_color_g"] = game.target_color_g
-    Store["target_color_b"] = game.target_color_b
+    Store['hole'] = game.hole
+    Store['swings'] = game.swings
+    Store['player_color_r'] = game.player_color_r
+    Store['player_color_g'] = game.player_color_g
+    Store['player_color_b'] = game.player_color_b
+    Store['target_color_r'] = game.target_color_r
+    Store['target_color_g'] = game.target_color_g
+    Store['target_color_b'] = game.target_color_b
   end
 
   def save_history
-    Store["history"] = (Store["history"] || []) + [game.score] if game.over?
+    Store['history'] = (Store['history'] || []) + [game.score] if game.over?
   end
 
   def load_game
     new_game
-    game.hole = Store["hole"] || game.hole
-    game.swings = Store["swings"] || game.swings
-    game.player_color_r = Store["player_color_r"] || game.player_color_r
-    game.player_color_g = Store["player_color_g"] || game.player_color_g
-    game.player_color_b = Store["player_color_b"] || game.player_color_b
-    game.target_color_r = Store["target_color_r"] || game.target_color_r
-    game.target_color_g = Store["target_color_g"] || game.target_color_g
-    game.target_color_b = Store["target_color_b"] || game.target_color_b
+    game.hole = Store['hole'] || game.hole
+    game.swings = Store['swings'] || game.swings
+    game.player_color_r = Store['player_color_r'] || game.player_color_r
+    game.player_color_g = Store['player_color_g'] || game.player_color_g
+    game.player_color_b = Store['player_color_b'] || game.player_color_b
+    game.target_color_r = Store['target_color_r'] || game.target_color_r
+    game.target_color_g = Store['target_color_g'] || game.target_color_g
+    game.target_color_b = Store['target_color_b'] || game.target_color_b
   end
 
   def cheat
