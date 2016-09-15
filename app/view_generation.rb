@@ -1,6 +1,32 @@
 module ViewGeneration
+  def ui_view opts
+    @views ||= {}
+    @current_parent ||= view
+    opts[:id] ||= :none
+    should_add = !@views[id]
+    view = @views[id] || klass.new
+    if id == :none
+      view = klass.new
+      should_add = true
+    end
+    @current_parent = view
+    view.height = 30 if view.is_a?(UI::Label)
+    view.height = 35 if view.is_a?(UI::Button)
+    view.color = :black if text? view
+    view.font = font if text? view
+    opts.each do |k, v|
+      v.send(k, v) if v.responds_to? k
+    end
+    set_view id, v
+    @current_parent.add_child(v) if should_add
+  end
+
+  def ui_label opts
+    puts opts
+  end
+
   def render id, klass, &block
-    @views ||= { }
+    @views ||= {}
     previous_parent = (@current_parent || view)
     should_add = !@views[id]
     v = @views[id] || klass.new

@@ -72,11 +72,13 @@ class ColorGolfScreen < UI::Screen
   end
 
   def available_percentages
-    @available_percentages ||= [%w(ff ff),
-                                %w(bf bf),
-                                %w(80 80),
-                                %w(3f 3f),
-                                %w(00 00)]
+    @available_percentages ||= [
+      %w(ff ff),
+      # %w(bf bf),
+      # %w(80 80),
+      # %w(3f 3f),
+      %w(00 00)
+    ]
   end
 
   def cell_ids
@@ -129,6 +131,12 @@ class ColorGolfScreen < UI::Screen
     end
   end
 
+  def render_final_score
+    render :score, UI::Label do |label|
+      label.text_alignment = :center
+    end
+  end
+
   def render_target_color_square
     render :target_color_wrapper, UI::View do |header|
       header.margin = 5
@@ -165,6 +173,14 @@ class ColorGolfScreen < UI::Screen
         end
       end
     end
+  end
+
+  def header_width
+    @header_width ||= width_for(:target_color_wrapper)
+  end
+
+  def cell_width
+    @cell_width ||= (header_width - 30).fdiv(3)
   end
 
   def render_rgb_grid
@@ -247,12 +263,6 @@ class ColorGolfScreen < UI::Screen
           save_game
         end
       end
-    end
-  end
-
-  def render_final_score
-    render :score, UI::Label do |label|
-      label.text_alignment = :center
     end
   end
 
