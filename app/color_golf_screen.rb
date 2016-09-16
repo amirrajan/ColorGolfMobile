@@ -16,14 +16,18 @@ class ColorGolfScreen < UI::Screen
 
   def on_load
     $self = self
+    new_game
     load_game
     set_random_stat_text
     render_view
     update
   end
 
-  def update
+  def update_hole
     get_view(:hole).text = "Hole #{game.hole} of 9"
+  end
+
+  def update_colors
     get_view(:target_color).background_color = game.target_color
     get_view(:player_color).background_color = game.player_color || :white
 
@@ -32,15 +36,19 @@ class ColorGolfScreen < UI::Screen
     else
       get_view(:player_color).text = '?'
     end
+  end
 
+  def update_saturation_selection
     cell_ids.each do |k, v|
-      if v[:value] == game.send(v[:prop])
+      if v[:value] == (game.send(v[:prop]) || '')
         get_view(k).background_color = white_smoke
       else
         get_view(k).background_color = :white
       end
     end
+  end
 
+  def update_next_hole_option
     if game.correct?
       get_view(:next_hole_button).hidden = false
       get_view(:next_hole_button).height = 30
@@ -48,22 +56,32 @@ class ColorGolfScreen < UI::Screen
       get_view(:next_hole_button).hidden = true
     end
 
-    get_view(:new_game_button).title = "Final Score: #{game.score}, Go Again"
-
     if game.over?
       get_view(:next_hole_button).hidden = true
       get_view(:new_game_button).hidden = false
       get_view(:new_game_button).height = 30
+      get_view(:new_game_button).title = "Final Score: #{game.score}, Go Again"
     else
       get_view(:new_game_button).hidden = true
     end
+  end
 
+  def update_score
     get_view(:score).text = "Score: #{@game.score_string}"
+  end
 
+  def update_stats
     get_view(:stat_text).text = @random_stat_text
+  end
 
+  def update
+    update_hole
+    update_colors
+    update_saturation_selection
+    update_next_hole_option
+    update_score
+    update_stats
     view.update_layout
-
     save_game
   end
 
@@ -73,11 +91,11 @@ class ColorGolfScreen < UI::Screen
 
   def available_percentages
     @available_percentages ||= [
-      %w(ff ff),
-      # %w(bf bf),
-      # %w(80 80),
-      # %w(3f 3f),
-      %w(00 00)
+      %w(ff 0xff),
+      %w(bf 0xbf),
+      %w(80 0x80),
+      %w(3f 0x3f),
+      %w(00 0x00)
     ]
   end
 
@@ -218,22 +236,18 @@ class ColorGolfScreen < UI::Screen
       end
 
       cell_ids.each do |k, v|
-        render_rgb_button k, v[:method], v[:value], v[:text], cell_width
+        render k, UI::Button do |button|
+          button.width = cell_width
+          button.margin = 1
+          button.padding = 1
+          button.title = v[:text]
+          button.on :tap do
+            game.send(v[:method], v[:value])
+            update
+          end
+          button.background_color = :white
+        end
       end
-    end
-  end
-
-  def render_rgb_button id, target_swing, value, text, width
-    render id, UI::Button do |button|
-      button.width = width
-      button.margin = 1
-      button.padding = 1
-      button.title = text
-      button.on :tap do
-        game.send(target_swing, value)
-        update
-      end
-      button.background_color = :white
     end
   end
 
@@ -303,15 +317,21 @@ class ColorGolfScreen < UI::Screen
   end
 
   def load_game
-    new_game
     game.hole = Store['hole'] || game.hole
-    game.swings = Store['swings'] || game.swings
+    game.swings = Store['swings'] || game.swings || 0
     game.player_color_r = Store['player_color_r'] || game.player_color_r
     game.player_color_g = Store['player_color_g'] || game.player_color_g
     game.player_color_b = Store['player_color_b'] || game.player_color_b
     game.target_color_r = Store['target_color_r'] || game.target_color_r
     game.target_color_g = Store['target_color_g'] || game.target_color_g
     game.target_color_b = Store['target_color_b'] || game.target_color_b
+
+    game.target_color_r = '00' if game.target_color_r == 0
+    game.target_color_g = '00' if game.target_color_g == 0
+    game.target_color_b = '00' if game.target_color_b == 0
+    game.player_color_r = '00' if game.player_color_r == 0
+    game.player_color_g = '00' if game.player_color_g == 0
+    game.player_color_b = '00' if game.player_color_b == 0
   end
 
   def cheat

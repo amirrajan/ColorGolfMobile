@@ -42,3 +42,9 @@ Style/ConditionalAssignment:
 
 Performance/RedundantBlockCall:
   Enabled: false
+
+Style/NumericPredicate:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false

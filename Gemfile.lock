@@ -1,3 +1,8 @@
+PATH
+  remote: ../Flow
+  specs:
+    motion-flow (0.1.7)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -24,7 +29,6 @@ GEM
     highline (1.7.8)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
-    motion-flow (0.1.7)
     motion-provisioning (0.0.4)
       plist (~> 3.2)
       security (~> 0.1)
@@ -51,7 +55,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  motion-flow
+  motion-flow!
   motion-provisioning
   rake
 
