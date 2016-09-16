@@ -45,42 +45,4 @@ module ViewGeneration
 
     width_for_view(v.parent)
   end
-
-  def attribute_white_list
-    { width: :width= }
-  end
-
-  def new_render hierarchy
-    @views ||= {}
-    @view_bread_crumbs ||= [view]
-    opts[:id] ||= :none
-    id = opts[:id]
-    should_add = !@views[id]
-    new_view = @views[id] || UI::View.new
-    if id == :none
-      new_view = UI::View.new
-      should_add = true
-    end
-    new_view.height = 30 if new_view.is_a?(UI::Label)
-    new_view.height = 35 if new_view.is_a?(UI::Button)
-    new_view.color = :black if text? new_view
-    new_view.font = font if text? new_view
-    attribute_white_list.each do |attr, method|
-      opts[attr] &&
-        new_view.respond_to?(method) &&
-        new_view.send(method, opts[attr]) && puts(method)
-    end
-    set_view id, new_view
-    @view_bread_crumbs.last.add_child(new_view) if should_add
-    @view_bread_crumbs.push new_view
-  end
-
-  def ui_view opts
-
-  end
-
-  def ui_label opts
-    puts opts
-  end
-
 end
