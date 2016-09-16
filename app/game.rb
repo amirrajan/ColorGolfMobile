@@ -33,9 +33,9 @@ class Game
   end
 
   def player_color
-    return nil if !@player_color_r
-    return nil if !@player_color_g
-    return nil if !@player_color_b
+    return nil unless @player_color_r
+    return nil unless @player_color_g
+    return nil unless @player_color_b
 
     [@player_color_r,
      @player_color_g,
@@ -74,7 +74,7 @@ class Game
   end
 
   def over?
-    hole == 9 and correct?
+    hole == 9 && correct?
   end
 
   def score_string
@@ -84,30 +84,30 @@ class Game
   end
 
   def self.stats history, current_hole = 1
-    if history.length == 0 and current_hole > 3
+    if history.length.zero? && current_hole > 3
       return random_color_message
     end
 
-    if history.length == 0 and current_hole == 3
+    if history.length.zero? && current_hole == 3
       return 'Thirty percent there! More help. Red at 0xff and Green and 0x80 make orange (kinda). Blue at 0xff and Red at 0x80 make purple (kinda).'
     end
 
-    if history.length == 0 and current_hole == 2
+    if history.length.zero? && current_hole == 2
       return 'Excellent. Hole number two. Here\'s some help. Red at 0xff and green at 0xff make yellow. Red 0xff and blue 0xff make magenta. Blue and green 0xff make cyan.'
     end
 
-    if history.length == 0 and current_hole == 1
+    if history.length.zero? && current_hole == 1
       return 'First game huh? Select the right Red, Green, and Blue hex values to progress to the next hole. There are nine holes in total. Good luck.'
     end
 
     perfect_score_count = history.find_all { |i| i == 0 }.count
 
     if perfect_score_count > 0
-      return "I cannot believe this. You\'ve gotten a perfect score #{perfect_score_count} time(s). Your average score across #{history.count} game(s) is #{history.inject{ |sum, el| sum + el }.fdiv(history.size)}."
+      return "I cannot believe this. You\'ve gotten a perfect score #{perfect_score_count} time(s). Your average score across #{history.count} game(s) is #{history.inject { |a, e| a + e }.fdiv(history.size)}."
     end
 
     if history.length == 1
-      return 'Excellent, you\'ve got a game under your belt. Now to improve on your score of #{history.first} strokes.'
+      return "Excellent, you\'ve got a game under your belt. Now to improve on your score of #{history.first} strokes."
     end
 
     [
@@ -124,11 +124,11 @@ class Game
   end
 
   def self.stats_average history
-    'You\'ve played #{history.length} game(s). Your average score across those game(s) is #{history.inject{ |sum, el| sum + el }.fdiv(history.size).round(2)}.'
+    "You\'ve played #{history.length} game(s). Your average score across those game(s) is #{history.inject { |a, e| a + e }.fdiv(history.size).round(2)}."
   end
 
   def self.stats_all_time_best history
-    'Your all time best score is #{history.min}. Time will tell if you can beat that.'
+    "Your all time best score is #{history.min}. Time will tell if you can beat that."
   end
 
   def self.random_color_message

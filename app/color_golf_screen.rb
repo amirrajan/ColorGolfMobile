@@ -93,7 +93,7 @@ class ColorGolfScreen < UI::Screen
     @available_percentages ||= [
       %w(ff 0xff),
       %w(bf 0xbf),
-      %w(80 0x80),
+      # %w(80 0x80),
       %w(3f 0x3f),
       %w(00 0x00)
     ]
@@ -136,7 +136,7 @@ class ColorGolfScreen < UI::Screen
     render_target_color_square
     render_player_color_square
     render_rgb_grid
-    render_next_hole_new_game_button
+    render_next_hole_option
     render_stat_text
     view.update_layout
   end
@@ -187,7 +187,7 @@ class ColorGolfScreen < UI::Screen
           square.margin = 1
           square.align_self = :center
           square.text_alignment = :center
-          square.font = font.merge({ size: 30 })
+          square.font = font.merge(size: 30)
         end
       end
     end
@@ -251,13 +251,15 @@ class ColorGolfScreen < UI::Screen
     end
   end
 
-  def render_next_hole_new_game_button
+  def render_next_hole_option
     render :none, UI::View do |view|
       view.height = 40
       render :next_hole_button, UI::Button do |button|
         button.title = 'Next Hole'
         button.color = bluish
-        button.font = font.merge({ size: 20 })
+        button.font = font.merge(size: 20)
+        button.height = 40
+        button.background_color = :white
         button.on :tap do
           game.next_hole
           set_random_stat_text
@@ -268,7 +270,9 @@ class ColorGolfScreen < UI::Screen
       render :new_game_button, UI::Button do |button|
         button.title = 'Go Again'
         button.color = bluish
-        button.font = font.merge({ size: 20 })
+        button.font = font.merge(size: 20)
+        button.height = 40
+        button.background_color = :white
         button.on :tap do
           save_history
           new_game
@@ -285,7 +289,7 @@ class ColorGolfScreen < UI::Screen
       label.text_alignment = :center
       label.height = 80
       label.margin = 10
-      label.font = font.merge({ size: 16 })
+      label.font = font.merge(size: 16)
     end
   end
 
