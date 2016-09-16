@@ -93,7 +93,7 @@ class ColorGolfScreen < UI::Screen
     @available_percentages ||= [
       %w(ff 0xff),
       %w(bf 0xbf),
-      # %w(80 0x80),
+      %w(80 0x80),
       %w(3f 0x3f),
       %w(00 0x00)
     ]
