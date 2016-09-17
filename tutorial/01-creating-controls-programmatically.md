@@ -5,7 +5,7 @@ Flow, let's look using just the core iOS and Android controls first.
 
 # Creating an iOS Only App and Adding a Button to the Screen #
 
-Create a new projects.
+Create a new project.
 
 ```shell
 motion create button-app
@@ -27,7 +27,7 @@ cd app
 touch main_view_controller.rb
 ```
 
-Here is how you would add a `UIButton` programmatically in ObjectiveC:
+Here is how you would add a `UIButton` programmatically in Objective C:
 
 ```objective-c
 UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -80,3 +80,63 @@ rake
 ```
 
 # Creating an Android Only App and Adding a Button to the Screen #
+
+Create a new project.
+
+```shell
+motion create --template=android ButtonApp
+cd ButtonApp
+```
+
+Update the `Rakefile` and set an `app.api_version` to match your device/simulator, here is an example:
+
+```ruby
+# -*- coding: utf-8 -*-
+$:.unshift("/Library/RubyMotion/lib")
+require 'motion/project/template/android'
+
+begin
+  require 'bundler'
+  Bundler.require
+rescue LoadError
+end
+
+Motion::Project::App.setup do |app|
+  # Use `rake config' to see complete project settings.
+  app.name = 'ButtonApp'
+  app.api_version = '23'
+end
+```
+
+Make sure the app runs:
+
+```shell
+rake
+```
+
+Put the following code in `main_activity.rb`.
+
+```ruby
+class MainActivity < Android::App::Activity
+  def onCreate(savedInstanceState)
+    super
+
+    b = Android::Widget::Button.new self
+    b.setText 'tap me'
+    b.setTextSize 2, 14
+    b.setOnClickListener(self)
+    b.id = 1
+    setContentView(b)
+  end
+
+  def onClick view
+    puts 'worky'
+  end
+end
+```
+
+Run the app:
+
+```shell
+rake
+```
