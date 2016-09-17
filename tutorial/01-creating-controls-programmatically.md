@@ -7,14 +7,14 @@ Flow, let's look using just the core iOS and Android controls first.
 
 Create a new projects.
 
-```
+```shell
 motion create button-app
 cd button-app
 ```
 
 Make sure it runs:
 
-```
+```shell
 rake
 ```
 
@@ -22,7 +22,7 @@ Exit app by pressing `ctrl+c`.
 
 Add new file.
 
-```
+```shell
 cd app
 touch main_view_controller.rb
 ```
@@ -63,19 +63,19 @@ end
 
 In `app_delegate.rb`, updated
 
-```
+```objective-c
 rootViewController = UiViewController.alloc.init
 ```
 
 to
 
-```
+```objective-c
 rootViewController = MainViewController.alloc.init
 ```
 
 Run the app and then click the button:
 
-```
+```shell
 rake
 ```
 
