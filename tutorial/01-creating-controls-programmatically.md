@@ -29,7 +29,7 @@ touch main_view_controller.rb
 
 Here is how you would add a `UIButton` programmatically in ObjectiveC:
 
-```cpp
+```objective-c
 UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 [button addTarget:self
            action:@selector(aMethod:)
