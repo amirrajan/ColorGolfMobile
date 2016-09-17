@@ -89,26 +89,6 @@ motion create --template=android ButtonApp
 cd ButtonApp
 ```
 
-Update the `Rakefile` and set an `app.api_version` to match your device/simulator, here is an example:
-
-```ruby
-# -*- coding: utf-8 -*-
-$:.unshift("/Library/RubyMotion/lib")
-require 'motion/project/template/android'
-
-begin
-  require 'bundler'
-  Bundler.require
-rescue LoadError
-end
-
-Motion::Project::App.setup do |app|
-  # Use `rake config' to see complete project settings.
-  app.name = 'ButtonApp'
-  app.api_version = '23'
-end
-```
-
 Make sure the app runs:
 
 ```shell
