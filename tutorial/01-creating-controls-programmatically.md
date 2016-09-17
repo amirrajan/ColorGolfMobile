@@ -48,11 +48,12 @@ class MainViewController < UIViewController
     button.addTarget(
       self,
       action: :button_tapped,
-      forControlEvents: UIControlEventTouchUpInside)
+      forControlEvents: UIControlEventTouchUpInside
+    )
 
     button.setTitle 'Tap Me', forState: UIControlStateNormal
     button.frame = CGRectMake(80, 210, 160, 40)
-    self.view.addSubview button
+    view.addSubview button
   end
 
   def button_tapped
