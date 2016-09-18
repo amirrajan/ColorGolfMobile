@@ -1,5 +1,6 @@
 class MainActivity < Android::Support::V7::App::AppCompatActivity
   def onCreate(savedInstanceState)
+    super
     UI.context = self
     Store.context = self
 
