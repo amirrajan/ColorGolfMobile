@@ -7,13 +7,13 @@ module ViewGeneration
     b.setBackground(button_background)
 
     ld = layout_definition(
-        width: width,
-        height: row_height,
-        margin_top: 10,
-        weight: 0.3,
-        margin_bottom: 10,
-        margin_right: 10,
-        margin_left: 10)
+        :width => width,
+        :height => row_height,
+        :margin_top => 10,
+        :weight => 0.3,
+        :margin_bottom => 10,
+        :margin_right => 10,
+        :margin_left => 10)
 
     yield ld, b if block_given?
 
@@ -33,13 +33,13 @@ module ViewGeneration
     b.setBackground(link_background)
 
     ld = layout_definition(
-        width: :auto,
-        height: :auto,
-        margin_top: 10,
-        weight: 0.3,
-        margin_bottom: 10,
-        margin_right: 10,
-        margin_left: 10)
+        :width => :auto,
+        :height => :auto,
+        :margin_top => 10,
+        :weight => 0.3,
+        :margin_bottom => 10,
+        :margin_right => 10,
+        :margin_left => 10)
 
     yield ld, b if block_given?
 
