@@ -11,7 +11,7 @@ tax you pay.
 - You need to install XCode command line tools by running `xcode-select --install`.
 - You need to Java preferablly [Java JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html).
 - Install [Virtual Box](https://www.virtualbox.org/wiki/Downloads).
-- Install [Genymotion](https://www.genymotion.com/thank-you-freemium/) for fast Android Emulation.
+- Install [Genymotion](https://www.genymotion.com/fun-zone/) for fast Android Emulation.
 
 # Installing RubyMotion #
 
