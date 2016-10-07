@@ -89,14 +89,28 @@ class ColorGolfScreen < UI::Screen
     @random_stat_text = Game.stats(Store['history'] || [], @game.hole)
   end
 
+  def cause_jni
+    true
+  end
+
   def available_percentages
-    @available_percentages ||= [
-      %w(ff 0xff),
-      # %w(bf 0xbf),
-      %w(80 0x80),
-      # %w(3f 0x3f),
-      %w(00 0x00)
-    ]
+    if cause_jni
+      @available_percentages ||= [
+        %w(ff 0xff),
+        %w(bf 0xbf),
+        %w(80 0x80),
+        %w(3f 0x3f),
+        %w(00 0x00)
+      ]
+    else
+      @available_percentages ||= [
+        %w(ff 0xff),
+        # %w(bf 0xbf),
+        %w(80 0x80),
+        # %w(3f 0x3f),
+        %w(00 0x00)
+      ]
+    end
   end
 
   def cell_ids
