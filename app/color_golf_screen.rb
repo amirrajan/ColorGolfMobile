@@ -87,8 +87,6 @@ class ColorGolfScreen < UI::Screen
     render_target_color_square
     render_player_color_square
     render_rgb_grid
-    render_next_hole_option
-    render_stat_text
     view.update_layout
   end
 
