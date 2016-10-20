@@ -20,69 +20,6 @@ class ColorGolfScreen < UI::Screen
     load_game
     set_random_stat_text
     render_view
-    update
-  end
-
-  def update_hole
-    get_view(:hole).text = "Hole #{game.hole} of 9"
-  end
-
-  def update_colors
-    get_view(:target_color).background_color = game.target_color
-    get_view(:player_color).background_color = game.player_color || :white
-
-    if game.player_color
-      get_view(:player_color).text = ' '
-    else
-      get_view(:player_color).text = '?'
-    end
-  end
-
-  def update_saturation_selection
-    cell_ids.each do |k, v|
-      if v[:value] == (game.send(v[:prop]) || '')
-        get_view(k).background_color = white_smoke
-      else
-        get_view(k).background_color = :white
-      end
-    end
-  end
-
-  def update_next_hole_option
-    if game.correct?
-      get_view(:next_hole_button).hidden = false
-      get_view(:next_hole_button).height = 30
-    else
-      get_view(:next_hole_button).hidden = true
-    end
-
-    if game.over?
-      get_view(:next_hole_button).hidden = true
-      get_view(:new_game_button).hidden = false
-      get_view(:new_game_button).height = 30
-      get_view(:new_game_button).title = "Final Score: #{game.score}, Go Again"
-    else
-      get_view(:new_game_button).hidden = true
-    end
-  end
-
-  def update_score
-    get_view(:score).text = "Score: #{@game.score_string}"
-  end
-
-  def update_stats
-    get_view(:stat_text).text = @random_stat_text
-  end
-
-  def update
-    update_hole
-    update_colors
-    update_saturation_selection
-    update_next_hole_option
-    update_score
-    update_stats
-    view.update_layout
-    save_game
   end
 
   def set_random_stat_text
@@ -207,16 +144,8 @@ class ColorGolfScreen < UI::Screen
     end
   end
 
-  def header_width
-    @header_width ||= width_for(:target_color_wrapper)
-  end
-
-  def cell_width
-    @cell_width ||= (header_width - 30).fdiv(3)
-  end
-
   def render_rgb_grid
-    header_width = width_for(:target_color_wrapper)
+    header_width = 100
 
     cell_width = (header_width - 30).fdiv(3)
 
