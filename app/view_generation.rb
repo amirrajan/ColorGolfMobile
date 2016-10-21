@@ -12,7 +12,6 @@ module ViewGeneration
     v.height = 30 if v.is_a?(UI::Label)
     v.height = 35 if v.is_a?(UI::Button)
     v.color = :black if text? v
-    v.font = font if text? v
     block.call(v)
     set_view id, v
     @current_parent = previous_parent
