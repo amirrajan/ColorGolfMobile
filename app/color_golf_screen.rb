@@ -1,10 +1,6 @@
 class ColorGolfScreen < UI::Screen
   include ViewGeneration
 
-  def on_show
-    navigation.hide_bar
-  end
-
   def on_load
     $self = self
     render_view
@@ -17,24 +13,15 @@ class ColorGolfScreen < UI::Screen
   def available_percentages
     if cause_jni
       @available_percentages ||= [
-        %w(A0 0xA0),
-        %w(90 0x90),
-        %w(80 0x80),
-        %w(70 0x70),
-        %w(60 0x60),
-        %w(50 0x50),
-        %w(40 0x40),
-        %w(30 0x30),
-        %w(20 0x20),
-        %w(10 0x10),
-        %w(00 0x00)
+        %w(A1 0xA1), %w(A0 0xA0), %w(90 0x90),
+        %w(80 0x80), %w(70 0x70), %w(60 0x60),
+        %w(50 0x50), %w(40 0x40), %w(30 0x30),
+        %w(20 0x20), %w(10 0x10), %w(00 0x00)
       ]
     else
       @available_percentages ||= [
         %w(ff 0xff),
-        # %w(bf 0xbf),
         %w(80 0x80),
-        # %w(3f 0x3f),
         %w(00 0x00)
       ]
     end
@@ -60,42 +47,31 @@ class ColorGolfScreen < UI::Screen
   end
 
   def render_rgb_grid
-    header_width = 100
-
-    cell_width = (header_width - 30).fdiv(3)
-
     render :none, UI::View do |grid|
-      grid.width = header_width
-      grid.margin = 5
+      grid.width = 300
       grid.flex_direction = :row
       grid.flex_wrap = :wrap
       grid.justify_content = :center
       grid.align_self = :center
 
       render :none, UI::Label do |label|
-        label.width = cell_width
+        label.width = 100
         label.text = 'Red'
-        label.align_self = :center
-        label.text_alignment = :center
       end
 
       render :none, UI::Label do |label|
-        label.width = cell_width
+        label.width = 100
         label.text = 'Green'
-        label.align_self = :center
-        label.text_alignment = :center
       end
 
       render :none, UI::Label do |label|
-        label.width = cell_width
+        label.width = 100
         label.text = 'Blue'
-        label.align_self = :center
-        label.text_alignment = :center
       end
 
       cell_ids.each do |id, v|
         render id, UI::Button do |button|
-          button.width = cell_width
+          button.width = 100
           button.title = v[:text]
         end
       end

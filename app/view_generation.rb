@@ -22,11 +22,6 @@ module ViewGeneration
     v.is_a?(UI::Button) || v.is_a?(UI::Label)
   end
 
-  def render! id, klass, &block
-    render id, klass, &block
-    view.update_layout
-  end
-
   def get_view id
     @views[id]
   end
