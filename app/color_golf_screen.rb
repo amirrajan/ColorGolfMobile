@@ -94,23 +94,11 @@ class ColorGolfScreen < UI::Screen
   end
 
   def available_percentages
-    if cause_jni
-      @available_percentages ||= [
-        %w(ff 0xff),
-        %w(bf 0xbf),
-        %w(80 0x80),
-        %w(3f 0x3f),
-        %w(00 0x00)
-      ]
-    else
-      @available_percentages ||= [
-        %w(ff 0xff),
-        # %w(bf 0xbf),
-        %w(80 0x80),
-        # %w(3f 0x3f),
-        %w(00 0x00)
-      ]
-    end
+    @available_percentages ||= [
+      %w(ff 0xff),
+      %w(80 0x80),
+      %w(00 0x00)
+    ]
   end
 
   def cell_ids
