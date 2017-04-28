@@ -75,11 +75,13 @@ class ColorGolfScreen < UI::Screen
                                   end
     end
 
-    @views[:target_color][:view].background_color = @game.target_color
+    @views[:target_color][:view].background_color = '#' + @game.target_color
 
     if @game.player_color
-      @views[:player_color][:view].background_color = @game.player_color
+      @views[:player_color][:view].background_color = '#' + @game.player_color
     end
+
+    view.update_layout
   end
 
   def button_row value, percentage
@@ -166,13 +168,15 @@ class ColorGolfScreen < UI::Screen
 
     attributes[:tap] && new_view.on(:tap) { send(attributes[:tap], new_view, attributes) }
 
+    hash = { view: new_view, attributes: attributes, meta: attributes[:meta] }
+
     if attributes[:id]
-      @views[attributes[:id]] = { view: new_view, attributes: attributes }
+      @views[attributes[:id]] = hash
     end
 
     if attributes[:class]
       @classes[attributes[:class]] ||= []
-      @classes[attributes[:class]] << { view: new_view, attributes: attributes }
+      @classes[attributes[:class]] << hash
     end
 
     new_view
@@ -205,6 +209,8 @@ class ColorGolfScreen < UI::Screen
   def render definition, styles
     @views ||= {}
     @classes ||= {}
+    $views = @views
+    $classes = @classes
     add_to_parent view, definition, styles
   end
 
