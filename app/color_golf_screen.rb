@@ -23,39 +23,45 @@ class ColorGolfScreen < UI::Screen
     view.update_layout
   end
 
-  def square_with_border
-    [:view, { margin: 5 },
-     [:view, { background_color: :silver, width: 72, height: 72, align_self: :center },
-      [:view, { width: 70, height: 70, margin: 1, align_self: :center }]]]
+  def square_with_border color
+    [:view, { id: :row, margin: 5 },
+     [:view, { id: :border, background_color: :silver, width: 72, height: 72, align_self: :center },
+      [:view, { id: :color, width: 70, height: 70, margin: 1, align_self: :center, background_color: color }]]]
   end
 
   def button_row value
-    [:view, { flex_direction: :row, margin: 3 },
-     3.times.map { [:button, { title: value }] }]
+    row(*3.times.map { [:button, { title: value }] })
+  end
+
+  def row *content
+    [:view, { flex_direction: :row, margin: 3 }, content]
   end
 
   def markup
     [:view, { flex: 1, padding: 40 },
      [[:label, { text: 'Hole 1 of 9' }],
       [:label, { text: 'Par' }],
-      square_with_border,
-      square_with_border,
-      [:view, { flex_direction: :row, margin: 3 },
-       [[:label, { text: 'Red', flex: 1 }],
-        [:label, { text: 'Green', flex: 1 }],
-        [:label, { text: 'Blue', flex: 1 }]]],
-      button_row('0xff'),
-      button_row('0xbf'),
-      button_row('0x80'),
-      button_row('0x3f'),
-      button_row('0x00')]]
+      square_with_border(:red),
+      square_with_border(:blue),
+      row([:label, { text: 'Red', flex: 1 }],
+          [:label, { text: 'Green', flex: 1 }],
+          [:label, { text: 'Blue', flex: 1 }])] +
+     available_percentages.map { |p| button_row(p[1]) }]
   end
 
   def css
     {
       label: { color: :black, text_alignment: :center },
-      button: { color: :black, flex: 1 }
+      button: { color: :black, flex: 1, height: 40 }
     }
+  end
+
+  def set_prop_for_view view, prop, value
+    view.send("#{prop}=", value)
+  end
+
+  def set_prop view, k, v
+    view.send("#{k}=", v)
   end
 
   def control_map
@@ -70,6 +76,18 @@ class ColorGolfScreen < UI::Screen
     [:id, :tap]
   end
 
+  def set_attribute view, k, v
+    return if special_keys.include? k
+
+    if v == :center
+      view.send("#{k}=", :center)
+    elsif v == :row
+      view.send("#{k}=", :row)
+    else
+      view.send("#{k}=", v)
+    end
+  end
+
   def new_view view_symbol, attributes, styles
     unless control_map.keys.include? view_symbol
       puts "#{view_symbol} not supported"
@@ -81,7 +99,7 @@ class ColorGolfScreen < UI::Screen
     new_view = control_map[view_symbol].new
 
     attributes.each do |k, v|
-      new_view.send("#{k}=", v) unless special_keys.include? k
+      set_attribute new_view, k, v
     end
 
     attributes[:tap] && new_view.on(:tap) { send attributes[:tap] }
