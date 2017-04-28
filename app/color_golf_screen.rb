@@ -1,8 +1,6 @@
 class ColorGolfScreen < UI::Screen
   attr_accessor :game
 
-  # include ViewGeneration
-
   def on_show
     navigation.hide_bar
   end
@@ -12,6 +10,7 @@ class ColorGolfScreen < UI::Screen
     @game = Game.new(colors_options_r: rgb_options,
                      colors_options_g: rgb_options,
                      colors_options_b: rgb_options)
+    $game = @game
   end
 
   def on_load
@@ -21,10 +20,11 @@ class ColorGolfScreen < UI::Screen
     set_random_stat_text
     render markup, css
     view.update_layout
+    update_view
   end
 
-  def square color
-    [:view, { id: :color,
+  def square id, color
+    [:view, { id: id,
               width: 70,
               height: 70,
               margin: 5,
@@ -35,15 +35,57 @@ class ColorGolfScreen < UI::Screen
               border_color: :black }]
   end
 
-  def tapped view, attributes
-    puts view
-    puts attributes
+  def swing_r _, attributes
+    @game.swing_for_r attributes[:meta][:percentage]
+    update_view
+  end
+
+  def swing_g _, attributes
+    @game.swing_for_g attributes[:meta][:percentage]
+    update_view
+  end
+
+  def swing_b _, attributes
+    @game.swing_for_b attributes[:meta][:percentage]
+    update_view
+  end
+
+  def update_view
+    @classes[:r].each do |c|
+      c[:view].background_color = if @game.player_color_r == c[:attributes][:meta][:percentage]
+                                    '#f5f5f5'
+                                  else
+                                    :white
+                                  end
+    end
+
+    @classes[:g].each do |c|
+      c[:view].background_color = if @game.player_color_g == c[:attributes][:meta][:percentage]
+                                    '#f5f5f5'
+                                  else
+                                    :white
+                                  end
+    end
+
+    @classes[:b].each do |c|
+      c[:view].background_color = if @game.player_color_b == c[:attributes][:meta][:percentage]
+                                    '#f5f5f5'
+                                  else
+                                    :white
+                                  end
+    end
+
+    @views[:target_color][:view].background_color = @game.target_color
+
+    if @game.player_color
+      @views[:player_color][:view].background_color = @game.player_color
+    end
   end
 
   def button_row value, percentage
-    row([:button, { title: value, tap: :tapped, meta: { color: :r, percentage: percentage } }],
-        [:button, { title: value, tap: :tapped, meta: { color: :g, percentage: percentage } }],
-        [:button, { title: value, tap: :tapped, meta: { color: :b, percentage: percentage } }])
+    row([:button, { title: value, class: :r, tap: :swing_r, meta: { color: :r, percentage: percentage } }],
+        [:button, { title: value, class: :g, tap: :swing_g, meta: { color: :g, percentage: percentage } }],
+        [:button, { title: value, class: :b, tap: :swing_b, meta: { color: :b, percentage: percentage } }])
   end
 
   def row *content
@@ -54,8 +96,8 @@ class ColorGolfScreen < UI::Screen
     [:view, { flex: 1, padding: 40 },
      [[:label, { text: 'Hole 1 of 9' }],
       [:label, { text: 'Par' }],
-      square(:red),
-      square(:blue),
+      square(:target_color, :white),
+      square(:player_color, :white),
       row([:label, { text: 'Red', flex: 1 }],
           [:label, { text: 'Green', flex: 1 }],
           [:label, { text: 'Blue', flex: 1 }])] +
@@ -93,7 +135,7 @@ class ColorGolfScreen < UI::Screen
   end
 
   def special_keys
-    [:id, :tap, :meta]
+    [:id, :tap, :meta, :class]
   end
 
   def set_attribute view, k, v
@@ -124,7 +166,14 @@ class ColorGolfScreen < UI::Screen
 
     attributes[:tap] && new_view.on(:tap) { send(attributes[:tap], new_view, attributes) }
 
-    @views[attributes[:id]] = new_view if attributes[:id]
+    if attributes[:id]
+      @views[attributes[:id]] = { view: new_view, attributes: attributes }
+    end
+
+    if attributes[:class]
+      @classes[attributes[:class]] ||= []
+      @classes[attributes[:class]] << { view: new_view, attributes: attributes }
+    end
 
     new_view
   end
@@ -155,6 +204,7 @@ class ColorGolfScreen < UI::Screen
 
   def render definition, styles
     @views ||= {}
+    @classes ||= {}
     add_to_parent view, definition, styles
   end
 
