@@ -3,6 +3,7 @@ class ColorGolfScreen < UI::Screen
 
   def on_show
     navigation.hide_bar
+    update_view
   end
 
   def new_game
@@ -20,19 +21,20 @@ class ColorGolfScreen < UI::Screen
     set_random_stat_text
     render markup, css
     view.update_layout
-    update_view
   end
 
   def square id, color
-    [:view, { id: id,
-              width: 70,
-              height: 70,
-              margin: 5,
-              align_self: :center,
-              background_color: color,
-              border_radius: 8,
-              border_width: 1,
-              border_color: :black }]
+    [:view,
+     { id: id,
+       width: 70,
+       height: 70,
+       margin: 5,
+       align_self: :center,
+       background_color: color,
+       border_radius: 8,
+       border_width: 1,
+       border_color: :black },
+     [:label, { flex: 1 }]]
   end
 
   def swing_r _, attributes
@@ -51,7 +53,7 @@ class ColorGolfScreen < UI::Screen
   end
 
   def update_view
-    @classes[:r].each do |c|
+    @classes[:r_buttons].each do |c|
       c[:view].background_color = if @game.player_color_r == c[:attributes][:meta][:percentage]
                                     '#f5f5f5'
                                   else
@@ -59,7 +61,7 @@ class ColorGolfScreen < UI::Screen
                                   end
     end
 
-    @classes[:g].each do |c|
+    @classes[:g_buttons].each do |c|
       c[:view].background_color = if @game.player_color_g == c[:attributes][:meta][:percentage]
                                     '#f5f5f5'
                                   else
@@ -67,7 +69,7 @@ class ColorGolfScreen < UI::Screen
                                   end
     end
 
-    @classes[:b].each do |c|
+    @classes[:b_buttons].each do |c|
       c[:view].background_color = if @game.player_color_b == c[:attributes][:meta][:percentage]
                                     '#f5f5f5'
                                   else
@@ -75,19 +77,29 @@ class ColorGolfScreen < UI::Screen
                                   end
     end
 
-    @views[:target_color][:view].background_color = '#' + @game.target_color
+    @views[:target_color][:view].background_color = @game.target_color
+    @views[:target_color][:view].hidden = true
+    @views[:target_color][:view].hidden = false
+    @views[:target_color][:view].children.first.text = ''
 
     if @game.player_color
-      @views[:player_color][:view].background_color = '#' + @game.player_color
+      @views[:player_color][:view].background_color = @game.player_color
+      @views[:player_color][:view].children.first.text = ''
+    else
+      @views[:player_color][:view].background_color = :white
+      @views[:player_color][:view].children.first.text = '?'
     end
+
+    @views[:player_color][:view].hidden = true
+    @views[:player_color][:view].hidden = false
 
     view.update_layout
   end
 
   def button_row value, percentage
-    row([:button, { title: value, class: :r, tap: :swing_r, meta: { color: :r, percentage: percentage } }],
-        [:button, { title: value, class: :g, tap: :swing_g, meta: { color: :g, percentage: percentage } }],
-        [:button, { title: value, class: :b, tap: :swing_b, meta: { color: :b, percentage: percentage } }])
+    row([:button, { title: value, class: :r_buttons, tap: :swing_r, meta: { color: :r, percentage: percentage } }],
+        [:button, { title: value, class: :g_buttons, tap: :swing_g, meta: { color: :g, percentage: percentage } }],
+        [:button, { title: value, class: :b_buttons, tap: :swing_b, meta: { color: :b, percentage: percentage } }])
   end
 
   def row *content
@@ -97,7 +109,7 @@ class ColorGolfScreen < UI::Screen
   def markup
     [:view, { flex: 1, padding: 40 },
      [[:label, { text: 'Hole 1 of 9' }],
-      [:label, { text: 'Par' }],
+      [:label, { text: 'Par', margin_bottom: 10 }],
       square(:target_color, :white),
       square(:player_color, :white),
       row([:label, { text: 'Red', flex: 1 }],
@@ -108,14 +120,17 @@ class ColorGolfScreen < UI::Screen
 
   def css
     {
-      label: { color: :black, text_alignment: :center },
+      label: { color: :black,
+               text_alignment: :center,
+               font: { name: 'Existence-Light', size: 16, extension: :otf } },
       button: { color: :black,
                 flex: 1,
                 height: 40,
                 background_color: :white,
                 border_radius: 8,
                 border_width: 1,
-                border_color: :silver,
+                border_color: :black,
+                font: { name: 'Existence-Light', size: 16, extension: :otf },
                 margin: 2 }
     }
   end
@@ -209,6 +224,7 @@ class ColorGolfScreen < UI::Screen
   def render definition, styles
     @views ||= {}
     @classes ||= {}
+    $view = view
     $views = @views
     $classes = @classes
     add_to_parent view, definition, styles
