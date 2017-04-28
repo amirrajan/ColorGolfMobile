@@ -23,14 +23,27 @@ class ColorGolfScreen < UI::Screen
     view.update_layout
   end
 
-  def square_with_border color
-    [:view, { id: :row, margin: 5 },
-     [:view, { id: :border, background_color: :silver, width: 72, height: 72, align_self: :center },
-      [:view, { id: :color, width: 70, height: 70, margin: 1, align_self: :center, background_color: color }]]]
+  def square color
+    [:view, { id: :color,
+              width: 70,
+              height: 70,
+              margin: 5,
+              align_self: :center,
+              background_color: color,
+              border_radius: 8,
+              border_width: 1,
+              border_color: :black }]
   end
 
-  def button_row value
-    row(*3.times.map { [:button, { title: value }] })
+  def tapped view, attributes
+    puts view
+    puts attributes
+  end
+
+  def button_row value, percentage
+    row([:button, { title: value, tap: :tapped, meta: { color: :r, percentage: percentage } }],
+        [:button, { title: value, tap: :tapped, meta: { color: :g, percentage: percentage } }],
+        [:button, { title: value, tap: :tapped, meta: { color: :b, percentage: percentage } }])
   end
 
   def row *content
@@ -41,18 +54,25 @@ class ColorGolfScreen < UI::Screen
     [:view, { flex: 1, padding: 40 },
      [[:label, { text: 'Hole 1 of 9' }],
       [:label, { text: 'Par' }],
-      square_with_border(:red),
-      square_with_border(:blue),
+      square(:red),
+      square(:blue),
       row([:label, { text: 'Red', flex: 1 }],
           [:label, { text: 'Green', flex: 1 }],
           [:label, { text: 'Blue', flex: 1 }])] +
-     available_percentages.map { |p| button_row(p[1]) }]
+     available_percentages.map { |p| button_row(p[1], p[0]) }]
   end
 
   def css
     {
       label: { color: :black, text_alignment: :center },
-      button: { color: :black, flex: 1, height: 40 }
+      button: { color: :black,
+                flex: 1,
+                height: 40,
+                background_color: :white,
+                border_radius: 8,
+                border_width: 1,
+                border_color: :silver,
+                margin: 2 }
     }
   end
 
@@ -73,7 +93,7 @@ class ColorGolfScreen < UI::Screen
   end
 
   def special_keys
-    [:id, :tap]
+    [:id, :tap, :meta]
   end
 
   def set_attribute view, k, v
@@ -102,7 +122,7 @@ class ColorGolfScreen < UI::Screen
       set_attribute new_view, k, v
     end
 
-    attributes[:tap] && new_view.on(:tap) { send attributes[:tap] }
+    attributes[:tap] && new_view.on(:tap) { send(attributes[:tap], new_view, attributes) }
 
     @views[attributes[:id]] = new_view if attributes[:id]
 
