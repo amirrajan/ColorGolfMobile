@@ -1,4 +1,6 @@
 class ColorGolfScreen < UI::Screen
+  include Hiccup
+
   attr_accessor :game
 
   def on_show
@@ -38,48 +40,49 @@ class ColorGolfScreen < UI::Screen
   end
 
   def swing_r _, attributes
-    @game.swing_for_r attributes[:meta][:percentage]
+    @game.swing_for_r attributes[:meta]
     update_view
   end
 
   def swing_g _, attributes
-    @game.swing_for_g attributes[:meta][:percentage]
+    @game.swing_for_g attributes[:meta]
     update_view
   end
 
   def swing_b _, attributes
-    @game.swing_for_b attributes[:meta][:percentage]
+    @game.swing_for_b attributes[:meta]
     update_view
   end
 
   def update_view
+    @views[:hole][:view].text = "Hole #{@game.hole} of 9"
+    @views[:score][:view].text = "Score: #{@game.score_string}"
+
     @classes[:r_buttons].each do |c|
-      c[:view].background_color = if @game.player_color_r == c[:attributes][:meta][:percentage]
-                                    '#f5f5f5'
+      c[:view].background_color = if @game.player_color_r == c[:attributes][:meta]
+                                    'd0d0d0'
                                   else
                                     :white
                                   end
     end
 
     @classes[:g_buttons].each do |c|
-      c[:view].background_color = if @game.player_color_g == c[:attributes][:meta][:percentage]
-                                    '#f5f5f5'
+      c[:view].background_color = if @game.player_color_g == c[:attributes][:meta]
+                                    'd0d0d0'
                                   else
                                     :white
                                   end
     end
 
     @classes[:b_buttons].each do |c|
-      c[:view].background_color = if @game.player_color_b == c[:attributes][:meta][:percentage]
-                                    '#f5f5f5'
+      c[:view].background_color = if @game.player_color_b == c[:attributes][:meta]
+                                    'd0d0d0'
                                   else
                                     :white
                                   end
     end
 
     @views[:target_color][:view].background_color = @game.target_color
-    @views[:target_color][:view].hidden = true
-    @views[:target_color][:view].hidden = false
     @views[:target_color][:view].children.first.text = ''
 
     if @game.player_color
@@ -90,39 +93,54 @@ class ColorGolfScreen < UI::Screen
       @views[:player_color][:view].children.first.text = '?'
     end
 
-    @views[:player_color][:view].hidden = true
-    @views[:player_color][:view].hidden = false
+    @views[:next_hole][:view].hidden = !@game.correct?
 
     view.update_layout
-  end
-
-  def button_row value, percentage
-    row([:button, { title: value, class: :r_buttons, tap: :swing_r, meta: { color: :r, percentage: percentage } }],
-        [:button, { title: value, class: :g_buttons, tap: :swing_g, meta: { color: :g, percentage: percentage } }],
-        [:button, { title: value, class: :b_buttons, tap: :swing_b, meta: { color: :b, percentage: percentage } }])
   end
 
   def row *content
     [:view, { flex_direction: :row, margin: 3 }, content]
   end
 
+  def spacer height
+    [:view, { height: height, margin: 0, padding: 0 }]
+  end
+
   def markup
     [:view, { flex: 1, padding: 40 },
-     [[:label, { text: 'Hole 1 of 9' }],
-      [:label, { text: 'Par', margin_bottom: 10 }],
+     [[:label, { id: :hole, text: 'Hole 1 of 9' }],
+      spacer(5),
+      [:label, { id: :score, text: 'Par', margin_bottom: 10 }],
       square(:target_color, :white),
       square(:player_color, :white),
+      spacer(15),
       row([:label, { text: 'Red', flex: 1 }],
           [:label, { text: 'Green', flex: 1 }],
-          [:label, { text: 'Blue', flex: 1 }])] +
-     available_percentages.map { |p| button_row(p[1], p[0]) }]
+          [:label, { text: 'Blue', flex: 1 }]),
+      [:view, {},
+       available_percentages.map do |p|
+         row([:button, { title: p[1], class: :r_buttons, tap: :swing_r, meta: p[0] }],
+             [:button, { title: p[1], class: :g_buttons, tap: :swing_g, meta: p[0] }],
+             [:button, { title: p[1], class: :b_buttons, tap: :swing_b, meta: p[0] }])
+       end],
+      [:button,
+       { id: :next_hole,
+         class: :link,
+         title: 'Next Hole',
+         tap: :next_hole,
+         align_self: :center }]]]
+  end
+
+  def next_hole *_
+    @game.next_hole
+    update_view
   end
 
   def css
-    {
-      label: { color: :black,
+    { label: { color: :black,
                text_alignment: :center,
-               font: { name: 'Existence-Light', size: 16, extension: :otf } },
+               font: { name: 'Existence-Light', size: 18, extension: :otf } },
+      link: { border_width: 0, color: bluish, font: font.merge(size: 20) },
       button: { color: :black,
                 flex: 1,
                 height: 40,
@@ -130,104 +148,8 @@ class ColorGolfScreen < UI::Screen
                 border_radius: 8,
                 border_width: 1,
                 border_color: :black,
-                font: { name: 'Existence-Light', size: 16, extension: :otf },
-                margin: 2 }
-    }
-  end
-
-  def set_prop_for_view view, prop, value
-    view.send("#{prop}=", value)
-  end
-
-  def set_prop view, k, v
-    view.send("#{k}=", v)
-  end
-
-  def control_map
-    {
-      view: UI::View,
-      label: UI::Label,
-      button: UI:: Button
-    }
-  end
-
-  def special_keys
-    [:id, :tap, :meta, :class]
-  end
-
-  def set_attribute view, k, v
-    return if special_keys.include? k
-
-    if v == :center
-      view.send("#{k}=", :center)
-    elsif v == :row
-      view.send("#{k}=", :row)
-    else
-      view.send("#{k}=", v)
-    end
-  end
-
-  def new_view view_symbol, attributes, styles
-    unless control_map.keys.include? view_symbol
-      puts "#{view_symbol} not supported"
-      return nil
-    end
-
-    attributes = (styles[view_symbol] || {}).merge(attributes)
-
-    new_view = control_map[view_symbol].new
-
-    attributes.each do |k, v|
-      set_attribute new_view, k, v
-    end
-
-    attributes[:tap] && new_view.on(:tap) { send(attributes[:tap], new_view, attributes) }
-
-    hash = { view: new_view, attributes: attributes, meta: attributes[:meta] }
-
-    if attributes[:id]
-      @views[attributes[:id]] = hash
-    end
-
-    if attributes[:class]
-      @classes[attributes[:class]] ||= []
-      @classes[attributes[:class]] << hash
-    end
-
-    new_view
-  end
-
-  def control_definition? o
-    return false unless o
-    return false unless [2, 3].include? o.length
-    return false unless control_map.keys.include? o.first
-    true
-  end
-
-  def add_to_parent parent, definition, styles
-    v = new_view definition[0], definition[1], styles
-    content = definition[2]
-
-    if content
-      if control_definition?(content)
-        add_to_parent v, content, styles
-      elsif content.is_a? Array
-        content.each { |d| add_to_parent v, d, styles }
-      else
-        puts "#{content} is not supported"
-      end
-    end
-
-    parent.add_child v if v
-  end
-
-  def render definition, styles
-    @views ||= {}
-    @classes ||= {}
-    $view = view
-    $views = @views
-    $classes = @classes
-    add_to_parent view, definition, styles
+                font: font,
+                margin: 2 } }
   end
 
   def set_random_stat_text
@@ -291,6 +213,6 @@ class ColorGolfScreen < UI::Screen
 
   def cheat
     @game.cheat
-    update
+    update_view
   end
 end

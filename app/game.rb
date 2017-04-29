@@ -80,7 +80,7 @@ class Game
   def score_string
     return 'PAR' if score <= 0
 
-    score
+    '+' + score.to_s
   end
 
   def self.stats history, current_hole = 1
