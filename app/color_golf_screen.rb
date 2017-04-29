@@ -1,5 +1,7 @@
 class ColorGolfScreen < UI::Screen
   include Hiccup
+  include AppStyles
+  include ColorGolfScreenMarkup
 
   attr_accessor :game
 
@@ -21,22 +23,8 @@ class ColorGolfScreen < UI::Screen
     new_game
     load_game
     set_random_stat_text
-    render markup, css
+    render markup(available_percentages), css
     view.update_layout
-  end
-
-  def square id, color
-    [:view,
-     { id: id,
-       width: 70,
-       height: 70,
-       margin: 5,
-       align_self: :center,
-       background_color: color,
-       border_radius: 8,
-       border_width: 1,
-       border_color: :black },
-     [:label, { flex: 1 }]]
   end
 
   def swing_r _, attributes
@@ -98,58 +86,9 @@ class ColorGolfScreen < UI::Screen
     view.update_layout
   end
 
-  def row *content
-    [:view, { flex_direction: :row, margin: 3 }, content]
-  end
-
-  def spacer height
-    [:view, { height: height, margin: 0, padding: 0 }]
-  end
-
-  def markup
-    [:view, { flex: 1, padding: 40 },
-     [[:label, { id: :hole, text: 'Hole 1 of 9' }],
-      spacer(5),
-      [:label, { id: :score, text: 'Par', margin_bottom: 10 }],
-      square(:target_color, :white),
-      square(:player_color, :white),
-      spacer(15),
-      row([:label, { text: 'Red', flex: 1 }],
-          [:label, { text: 'Green', flex: 1 }],
-          [:label, { text: 'Blue', flex: 1 }]),
-      [:view, {},
-       available_percentages.map do |p|
-         row([:button, { title: p[1], class: :r_buttons, tap: :swing_r, meta: p[0] }],
-             [:button, { title: p[1], class: :g_buttons, tap: :swing_g, meta: p[0] }],
-             [:button, { title: p[1], class: :b_buttons, tap: :swing_b, meta: p[0] }])
-       end],
-      [:button,
-       { id: :next_hole,
-         class: :link,
-         title: 'Next Hole',
-         tap: :next_hole,
-         align_self: :center }]]]
-  end
-
   def next_hole *_
     @game.next_hole
     update_view
-  end
-
-  def css
-    { label: { color: :black,
-               text_alignment: :center,
-               font: { name: 'Existence-Light', size: 18, extension: :otf } },
-      link: { border_width: 0, color: bluish, font: font.merge(size: 20) },
-      button: { color: :black,
-                flex: 1,
-                height: 40,
-                background_color: :white,
-                border_radius: 8,
-                border_width: 1,
-                border_color: :black,
-                font: font,
-                margin: 2 } }
   end
 
   def set_random_stat_text
@@ -164,18 +103,6 @@ class ColorGolfScreen < UI::Screen
       %w(3f 0x3f),
       %w(00 0x00)
     ]
-  end
-
-  def font
-    { name: 'Existence-Light', size: 18, extension: :otf }
-  end
-
-  def bluish
-    '2a5db0'
-  end
-
-  def white_smoke
-    'f5f5f5'
   end
 
   def save_game
