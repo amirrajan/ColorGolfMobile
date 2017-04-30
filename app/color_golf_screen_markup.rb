@@ -23,24 +23,24 @@ module ColorGolfScreenMarkup
 
   def markup button_options
     [:view, { flex: 1, padding: 40 },
-     [[:label, { id: :hole, text: 'Hole 1 of 9' }],
-      spacer(5),
-      [:label, { id: :score, text: 'Par', margin_bottom: 10 }],
-      square(:target_color, :white),
-      square(:player_color, :white),
-      spacer(15),
-      row(%w(Red Green Blue).map { |c| [:label, { text: c, flex: 1 }] }),
-      button_options.map do |p|
-        row([:button, { title: p[1], class: :r_buttons, tap: :swing_r, meta: p[0] }],
-            [:button, { title: p[1], class: :g_buttons, tap: :swing_g, meta: p[0] }],
-            [:button, { title: p[1], class: :b_buttons, tap: :swing_b, meta: p[0] }])
-      end,
-      [:button,
-       { id: :next_hole,
-         class: :link,
-         title: 'Next Hole',
-         tap: :next_hole,
-         align_self: :center }]]]
+     [:label, { id: :hole, text: 'Hole 1 of 9' }],
+     spacer(5),
+     [:label, { id: :score, text: 'Par', margin_bottom: 10 }],
+     square(:target_color, :white),
+     square(:player_color, :white),
+     spacer(15),
+     row(%w(Red Green Blue).map { |c| [:label, { text: c, flex: 1 }] }),
+     button_options.map do |p|
+       row([:button, { title: p[1], class: :r_buttons, tap: :swing_r, meta: p[0] }],
+           [:button, { title: p[1], class: :g_buttons, tap: :swing_g, meta: p[0] }],
+           [:button, { title: p[1], class: :b_buttons, tap: :swing_b, meta: p[0] }])
+     end,
+     [:button,
+      { id: :next_hole,
+        class: :link,
+        title: 'Next Hole',
+        tap: :next_hole,
+        align_self: :center }]]
   end
 
   def update_view game

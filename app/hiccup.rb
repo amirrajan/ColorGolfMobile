@@ -3,7 +3,8 @@ module Hiccup
     {
       view: UI::View,
       label: UI::Label,
-      button: UI:: Button
+      button: UI:: Button,
+      input: UI::TextInput
     }
   end
 
@@ -60,7 +61,6 @@ module Hiccup
 
   def control_definition? o
     return false unless o
-    return false unless [2, 3].include? o.length
     return false unless control_map.keys.include? o.first
     true
   end
@@ -76,17 +76,17 @@ module Hiccup
   def add_to_parent parent, definition, styles
     if definition[0].is_a? Symbol
       v = new_view definition[0], definition[1], styles
-      content = definition[2]
+      content = definition[2..-1]
 
       if definition[1].is_a? Array
-        content = definition[1]
+        content = definition[1..-1]
       end
 
       if content
         if control_definition?(content)
           add_to_parent v, content, styles
         elsif content.is_a?(Array)
-          find_first_unbox(content, nil).each { |unboxed| add_to_parent v, unboxed, styles }
+          find_first_unbox(content, content).each { |unboxed| add_to_parent v, unboxed, styles }
         else
           puts "#{content} is not supported as content"
         end
@@ -94,7 +94,7 @@ module Hiccup
 
       parent.add_child v if v
     elsif definition[0].is_a? Array
-      find_first_unbox(definition, nil).each { |unboxed| add_to_parent parent, unboxed, styles }
+      find_first_unbox(definition, definition).each { |unboxed| add_to_parent parent, unboxed, styles }
     else
       puts "first value of #{definition} wasn't a symbol or array"
     end
