@@ -54,23 +54,27 @@ class Game
     @hole += 1
   end
 
+  def par?
+    @swings == 0
+  end
+
   def score
-    @swings - (@hole * 3)
+    @swings
   end
 
   def swing_for_r r
+    @swings += 1 if player_color
     @player_color_r = r
-    @swings += 1
   end
 
   def swing_for_g g
+    @swings += 1 if player_color
     @player_color_g = g
-    @swings += 1
   end
 
   def swing_for_b b
+    @swings += 1 if player_color
     @player_color_b = b
-    @swings += 1
   end
 
   def over?
