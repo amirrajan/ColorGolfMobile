@@ -28,18 +28,38 @@ class ColorGolfScreen < UI::Screen
   end
 
   def swing_r _, attributes
-    @game.swing_for_r attributes[:meta]
+    if @game.correct?
+      @game.next_hole
+    else
+      @game.swing_for_r attributes[:meta]
+    end
     update_view
   end
 
   def swing_g _, attributes
-    @game.swing_for_g attributes[:meta]
+    if @game.correct?
+      @game.next_hole
+    else
+      @game.swing_for_g attributes[:meta]
+    end
     update_view
   end
 
   def swing_b _, attributes
-    @game.swing_for_b attributes[:meta]
+    if @game.correct?
+      @game.next_hole
+    else
+      @game.swing_for_b attributes[:meta]
+    end
     update_view
+  end
+
+  def button_selected view, value
+    view.background_color = if value
+                              'd0d0d0'
+                            else
+                              :white
+                            end
   end
 
   def update_view
@@ -47,27 +67,15 @@ class ColorGolfScreen < UI::Screen
     @views[:score][:view].text = "Score: #{@game.score_string}"
 
     @classes[:r_buttons].each do |c|
-      c[:view].background_color = if @game.player_color_r == c[:attributes][:meta]
-                                    'd0d0d0'
-                                  else
-                                    :white
-                                  end
+      button_selected c[:view], @game.player_color_r == c[:attributes][:meta]
     end
 
     @classes[:g_buttons].each do |c|
-      c[:view].background_color = if @game.player_color_g == c[:attributes][:meta]
-                                    'd0d0d0'
-                                  else
-                                    :white
-                                  end
+      button_selected c[:view], @game.player_color_g == c[:attributes][:meta]
     end
 
     @classes[:b_buttons].each do |c|
-      c[:view].background_color = if @game.player_color_b == c[:attributes][:meta]
-                                    'd0d0d0'
-                                  else
-                                    :white
-                                  end
+      button_selected c[:view], @game.player_color_b == c[:attributes][:meta]
     end
 
     @views[:target_color][:view].background_color = @game.target_color
