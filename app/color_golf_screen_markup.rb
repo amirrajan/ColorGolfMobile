@@ -29,7 +29,7 @@ module ColorGolfScreenMarkup
       square(:target_color, :white),
       square(:player_color, :white),
       spacer(15),
-      row(*%w(Red Green Blue).map { |c| [:label, { text: c, flex: 1 }] }),
+      row(%w(Red Green Blue).map { |c| [:label, { text: c, flex: 1 }] }),
       button_options.map do |p|
         row([:button, { title: p[1], class: :r_buttons, tap: :swing_r, meta: p[0] }],
             [:button, { title: p[1], class: :g_buttons, tap: :swing_g, meta: p[0] }],

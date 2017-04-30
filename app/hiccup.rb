@@ -65,6 +65,14 @@ module Hiccup
     true
   end
 
+  def find_first_unbox target, parent
+    if target.first.is_a? Array
+      find_first_unbox(target.first, target)
+    else
+      parent
+    end
+  end
+
   def add_to_parent parent, definition, styles
     if definition[0].is_a? Symbol
       v = new_view definition[0], definition[1], styles
@@ -77,8 +85,8 @@ module Hiccup
       if content
         if control_definition?(content)
           add_to_parent v, content, styles
-        elsif content.is_a?(Array) && control_definition?(content.first)
-          content.each { |d| add_to_parent v, d, styles }
+        elsif content.is_a?(Array)
+          find_first_unbox(content, nil).each { |unboxed| add_to_parent v, unboxed, styles }
         else
           puts "#{content} is not supported as content"
         end
@@ -86,7 +94,7 @@ module Hiccup
 
       parent.add_child v if v
     elsif definition[0].is_a? Array
-      definition.each { |unboxed| add_to_parent parent, unboxed, styles }
+      find_first_unbox(definition, nil).each { |unboxed| add_to_parent parent, unboxed, styles }
     else
       puts "first value of #{definition} wasn't a symbol or array"
     end
