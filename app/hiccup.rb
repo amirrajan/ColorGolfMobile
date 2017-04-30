@@ -25,7 +25,7 @@ module Hiccup
 
   def new_view view_symbol, attributes, styles
     unless control_map.keys.include? view_symbol
-      puts "#{view_symbol} not supported"
+      puts "#{view_symbol} not supported as attributes"
       return nil
     end
 
@@ -66,24 +66,30 @@ module Hiccup
   end
 
   def add_to_parent parent, definition, styles
-    v = new_view definition[0], definition[1], styles
-    content = definition[2]
+    if definition[0].is_a? Symbol
+      v = new_view definition[0], definition[1], styles
+      content = definition[2]
 
-    if definition[1].is_a? Array
-      content = definition[1]
-    end
-
-    if content
-      if control_definition?(content)
-        add_to_parent v, content, styles
-      elsif content.is_a? Array
-        content.each { |d| add_to_parent v, d, styles }
-      else
-        puts "#{content} is not supported"
+      if definition[1].is_a? Array
+        content = definition[1]
       end
-    end
 
-    parent.add_child v if v
+      if content
+        if control_definition?(content)
+          add_to_parent v, content, styles
+        elsif content.is_a?(Array) && control_definition?(content.first)
+          content.each { |d| add_to_parent v, d, styles }
+        else
+          puts "#{content} is not supported as content"
+        end
+      end
+
+      parent.add_child v if v
+    elsif definition[0].is_a? Array
+      definition.each { |unboxed| add_to_parent parent, unboxed, styles }
+    else
+      puts "first value of #{definition} wasn't a symbol or array"
+    end
   end
 
   def render definition, styles
