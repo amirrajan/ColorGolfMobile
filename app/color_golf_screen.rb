@@ -7,7 +7,6 @@ class ColorGolfScreen < UI::Screen
 
   def on_show
     navigation.hide_bar
-    update_view
   end
 
   def new_game
@@ -24,7 +23,7 @@ class ColorGolfScreen < UI::Screen
     load_game
     set_random_stat_text
     render markup(available_percentages), css
-    view.update_layout
+    update_view @game
   end
 
   def swing_r _, attributes
@@ -33,7 +32,7 @@ class ColorGolfScreen < UI::Screen
     else
       @game.swing_for_r attributes[:meta]
     end
-    update_view
+    update_view @game
   end
 
   def swing_g _, attributes
@@ -42,7 +41,7 @@ class ColorGolfScreen < UI::Screen
     else
       @game.swing_for_g attributes[:meta]
     end
-    update_view
+    update_view @game
   end
 
   def swing_b _, attributes
@@ -51,52 +50,12 @@ class ColorGolfScreen < UI::Screen
     else
       @game.swing_for_b attributes[:meta]
     end
-    update_view
-  end
-
-  def button_selected view, value
-    view.background_color = if value
-                              'd0d0d0'
-                            else
-                              :white
-                            end
-  end
-
-  def update_view
-    @views[:hole][:view].text = "Hole #{@game.hole} of 9"
-    @views[:score][:view].text = "Score: #{@game.score_string}"
-
-    @classes[:r_buttons].each do |c|
-      button_selected c[:view], @game.player_color_r == c[:attributes][:meta]
-    end
-
-    @classes[:g_buttons].each do |c|
-      button_selected c[:view], @game.player_color_g == c[:attributes][:meta]
-    end
-
-    @classes[:b_buttons].each do |c|
-      button_selected c[:view], @game.player_color_b == c[:attributes][:meta]
-    end
-
-    @views[:target_color][:view].background_color = @game.target_color
-    @views[:target_color][:view].children.first.text = ''
-
-    if @game.player_color
-      @views[:player_color][:view].background_color = @game.player_color
-      @views[:player_color][:view].children.first.text = ''
-    else
-      @views[:player_color][:view].background_color = :white
-      @views[:player_color][:view].children.first.text = '?'
-    end
-
-    @views[:next_hole][:view].hidden = !@game.correct?
-
-    view.update_layout
+    update_view @game
   end
 
   def next_hole *_
     @game.next_hole
-    update_view
+    update_view @game
   end
 
   def set_random_stat_text
@@ -148,6 +107,6 @@ class ColorGolfScreen < UI::Screen
 
   def cheat
     @game.cheat
-    update_view
+    update_view @game
   end
 end

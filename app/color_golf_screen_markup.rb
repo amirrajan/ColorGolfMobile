@@ -42,4 +42,44 @@ module ColorGolfScreenMarkup
          tap: :next_hole,
          align_self: :center }]]]
   end
+
+  def update_view game
+    @views[:hole][:view].text = "Hole #{game.hole} of 9"
+    @views[:score][:view].text = "Score: #{game.score_string}"
+
+    @classes[:r_buttons].each do |c|
+      button_selected c[:view], game.player_color_r == c[:attributes][:meta]
+    end
+
+    @classes[:g_buttons].each do |c|
+      button_selected c[:view], game.player_color_g == c[:attributes][:meta]
+    end
+
+    @classes[:b_buttons].each do |c|
+      button_selected c[:view], game.player_color_b == c[:attributes][:meta]
+    end
+
+    @views[:target_color][:view].background_color = game.target_color
+    @views[:target_color][:view].children.first.text = ''
+
+    if game.player_color
+      @views[:player_color][:view].background_color = game.player_color
+      @views[:player_color][:view].children.first.text = ''
+    else
+      @views[:player_color][:view].background_color = :white
+      @views[:player_color][:view].children.first.text = '?'
+    end
+
+    @views[:next_hole][:view].hidden = !game.correct?
+
+    view.update_layout
+  end
+
+  def button_selected view, value
+    view.background_color = if value
+                              'd0d0d0'
+                            else
+                              :white
+                            end
+  end
 end
