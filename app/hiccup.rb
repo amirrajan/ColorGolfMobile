@@ -29,6 +29,8 @@ module Hiccup
       return nil
     end
 
+    attributes = {} if attributes.is_a? Array
+
     attributes =
       (styles[view_symbol] || {})
         .merge(styles[attributes[:class]] || {})
@@ -66,6 +68,10 @@ module Hiccup
   def add_to_parent parent, definition, styles
     v = new_view definition[0], definition[1], styles
     content = definition[2]
+
+    if definition[1].is_a? Array
+      content = definition[1]
+    end
 
     if content
       if control_definition?(content)

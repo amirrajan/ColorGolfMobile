@@ -32,7 +32,7 @@ module ColorGolfScreenMarkup
       row([:label, { text: 'Red', flex: 1 }],
           [:label, { text: 'Green', flex: 1 }],
           [:label, { text: 'Blue', flex: 1 }]),
-      [:view, {},
+      [:view,
        button_options.map do |p|
          row([:button, { title: p[1], class: :r_buttons, tap: :swing_r, meta: p[0] }],
              [:button, { title: p[1], class: :g_buttons, tap: :swing_g, meta: p[0] }],
