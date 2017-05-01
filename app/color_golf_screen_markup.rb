@@ -22,7 +22,7 @@ module ColorGolfScreenMarkup
   end
 
   def markup button_options
-    [:view, { flex: 1, padding: 40 },
+    [:view, { id: :root }, { flex: 1, padding: 40 },
      [:label, { id: :hole, text: 'Hole 1 of 9' }],
      spacer(5),
      [:label, { id: :score, text: 'Par', margin_bottom: 10 }],

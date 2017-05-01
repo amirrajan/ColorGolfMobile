@@ -73,10 +73,31 @@ module Hiccup
     end
   end
 
+  def last_attribute_definition definition, index = 1
+    if definition[index + 1].is_a? Hash
+      last_attribute_definition(definition, index + 1)
+    else
+      index
+    end
+  end
+
+  def first_control_definition definition
+    last_attribute_definition(definition) + 1
+  end
+
+  def attribute_definition definition
+    last = last_attribute_definition(definition)
+    all_attributes = definition[1..last]
+    final = {}
+    all_attributes.each { |a| final = final.merge(a) }
+    final
+  end
+
   def add_to_parent parent, definition, styles
     if definition[0].is_a? Symbol
-      v = new_view definition[0], definition[1], styles
-      content = definition[2..-1]
+      v = new_view definition[0], attribute_definition(definition), styles
+
+      content = definition[first_control_definition(definition)..-1]
 
       if definition[1].is_a? Array
         content = definition[1..-1]
@@ -98,6 +119,14 @@ module Hiccup
     else
       puts "first value of #{definition} wasn't a symbol or array"
     end
+  end
+
+  def views
+    @views
+  end
+
+  def classes
+    @classes
   end
 
   def render definition, styles
